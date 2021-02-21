@@ -6,7 +6,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 import resources.Images;
-import screens.MainScreen;
+import screens.LabScreen;
 import screens.Screen;
 
 public class Game extends JPanel implements Runnable{
@@ -38,7 +38,7 @@ public class Game extends JPanel implements Runnable{
 	@Override
 	public void run() {
 		long start, elapsed, wait;
-		screen = new MainScreen();
+		screen = new LabScreen();
 		while(isRunning) {
 			start = System.nanoTime();
 			tick();

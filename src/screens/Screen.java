@@ -16,7 +16,7 @@ public class Screen {
 			this.ID = ID;
 		}
 	}
-	private int[][] position_data_UI = {{0,0},{2,3}};
+	static public int[][] headerUI_position_data = {{0,0},{2,3}};
 	public BufferedImage background;
 	public BufferedImage[] clickables;
 	
@@ -33,7 +33,7 @@ public class Screen {
 	public void draw(Graphics g) {
 		g.drawImage(background,0,0,background.getWidth()*Game.SCREENSCALE,background.getHeight()*Game.SCREENSCALE,null);
 		for (int i = 0; i < Images.headerUI.length; i++) {
-			g.drawImage(Images.headerUI[i],position_data_UI[i][0]*Game.SCREENSCALE,position_data_UI[i][1]*Game.SCREENSCALE,Images.headerUI[i].getWidth()*Game.SCREENSCALE,Images.headerUI[i].getHeight()*Game.SCREENSCALE,null);
+			g.drawImage(Images.headerUI[i],headerUI_position_data[i][0]*Game.SCREENSCALE,headerUI_position_data[i][1]*Game.SCREENSCALE,Images.headerUI[i].getWidth()*Game.SCREENSCALE,Images.headerUI[i].getHeight()*Game.SCREENSCALE,null);
 		}
 	}
 }

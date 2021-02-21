@@ -10,7 +10,7 @@ public class ScreenManager {
 	
 	public ScreenManager() {
 		pages = new Screen[page_count];
-		pages[Screen.page_ID.MAIN.ID] = new MainScreen();
+		pages[Screen.page_ID.MAIN.ID] = new LabScreen();
 		current_page = Screen.page_ID.MAIN.ID;
 	}
 	
