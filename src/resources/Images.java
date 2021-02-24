@@ -23,7 +23,7 @@ public class Images {
 		handle = new BufferedImage[16];
 		
 		try {
-			backgrounds[Screen.page_ID.MAIN.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/lab_background.png"));
+			backgrounds[Screen.page_ID.LAB.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/lab_background.png"));
 			headerUI[0] = ImageIO.read(getClass().getResourceAsStream("/resources/UI/headerUI.png"));
 			headerUI[1] = ImageIO.read(getClass().getResourceAsStream("/resources/UI/zones.png"));
 			

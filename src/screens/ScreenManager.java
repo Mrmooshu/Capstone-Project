@@ -2,16 +2,18 @@ package screens;
 
 import java.awt.Graphics;
 
+import main.Game;
+
 public class ScreenManager {
 
 	public Screen[] pages;
 	public int page_count = Screen.page_ID.values().length;
 	public int current_page;
 	
-	public ScreenManager() {
+	public ScreenManager(Game game) {
 		pages = new Screen[page_count];
-		pages[Screen.page_ID.MAIN.ID] = new LabScreen();
-		current_page = Screen.page_ID.MAIN.ID;
+		pages[Screen.page_ID.LAB.ID] = new LabScreen(game);
+		current_page = Screen.page_ID.LAB.ID;
 	}
 	
 	public void tick() {

@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import resources.Images;
 import screens.LabScreen;
 import screens.Screen;
+import screens.ScreenManager;
 
 public class Game extends JPanel implements Runnable{
 	private static final long serialVersionUID = 1L;
@@ -24,12 +25,15 @@ public class Game extends JPanel implements Runnable{
 	private int FPS = 60;
 	private long targetTime = 1000/FPS;
 	
+	private ScreenManager SM;
 	private Screen screen;
 	
 	public Game() {
 		setPreferredSize(new Dimension(SCREENWIDTH, SCREENHEIGHT));
 		setFocusable(true);
 		new Images();
+		SM = new ScreenManager(this);
+		setLayout(null);
 		isRunning = true;
 		thread = new Thread(this);
 		thread.start();
@@ -38,7 +42,6 @@ public class Game extends JPanel implements Runnable{
 	@Override
 	public void run() {
 		long start, elapsed, wait;
-		screen = new LabScreen();
 		while(isRunning) {
 			start = System.nanoTime();
 			tick();
@@ -66,6 +69,6 @@ public class Game extends JPanel implements Runnable{
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.clearRect(0, 0, SCREENWIDTH, SCREENHEIGHT);
-		screen.draw(g);
+		SM.draw(g);
 	}
 }

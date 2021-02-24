@@ -12,8 +12,8 @@ public class LabScreen extends Screen{
 	public Animation handle = new Animation(Images.handle, 2);
 
 	
-	public LabScreen() {
-		super(Images.backgrounds[Screen.page_ID.MAIN.ID]);
+	public LabScreen(Game game) {
+		super(Images.backgrounds[Screen.page_ID.LAB.ID], game);
 	}
 	
 	public void tick() {
