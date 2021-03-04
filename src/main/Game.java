@@ -5,6 +5,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
+
+import Data.Items;
 import resources.Images;
 import screens.LabScreen;
 import screens.Screen;
@@ -14,6 +16,7 @@ public class Game extends JPanel implements Runnable{
 	private static final long serialVersionUID = 1L;
 
 	public static final int SCREENSCALE = 3;
+	public static final int ITEMICONSCALE = 2;
 	public static final int WIDTH = 290;
 	public static final int HEIGHT = 150;
 	public static final int SCREENWIDTH = WIDTH*SCREENSCALE;
@@ -25,13 +28,14 @@ public class Game extends JPanel implements Runnable{
 	private int FPS = 60;
 	private long targetTime = 1000/FPS;
 	
-	private ScreenManager SM;
-	private Screen screen;
+	public ScreenManager SM;
+	public Items inventory;
 	
 	public Game() {
 		setPreferredSize(new Dimension(SCREENWIDTH, SCREENHEIGHT));
 		setFocusable(true);
 		new Images();
+		inventory = new Items();
 		SM = new ScreenManager(this);
 		setLayout(null);
 		isRunning = true;

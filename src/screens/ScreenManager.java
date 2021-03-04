@@ -13,6 +13,7 @@ public class ScreenManager {
 	public ScreenManager(Game game) {
 		pages = new Screen[page_count];
 		pages[Screen.page_ID.LAB.ID] = new LabScreen(game);
+		pages[Screen.page_ID.ITEM.ID] = new ItemScreen(game);
 		current_page = Screen.page_ID.LAB.ID;
 	}
 	

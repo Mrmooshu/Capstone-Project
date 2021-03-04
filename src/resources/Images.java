@@ -10,25 +10,42 @@ import screens.Screen;
 
 public class Images {
 
-	
-	public static BufferedImage[] backgrounds,headerUI,labUI,miningUI,woodcuttingUI,fishingUI;
+	//images
+	public static BufferedImage[] backgrounds,labUI,miningUI,woodcuttingUI,fishingUI,miscItems,miningItems,woodcuttingItems,fishingItems,numbers;
+	//animation frames
 	public static BufferedImage[] generator, handle;
+	//image
+	public static BufferedImage headerUI;
 	
 	public Images() {
 		
 		backgrounds = new BufferedImage[Screen.page_ID.values().length];
-		headerUI = new BufferedImage[Screen.headerUI_position_data.length];
 		labUI = new BufferedImage[0];
+		
+		miscItems = new BufferedImage[1];
+		miningItems = new BufferedImage[6];
+		woodcuttingItems = new BufferedImage[6];
+		fishingItems = new BufferedImage[6];
+		numbers = new BufferedImage[10];
+
 		generator = new BufferedImage[12];
 		handle = new BufferedImage[16];
 		
 		try {
 			backgrounds[Screen.page_ID.LAB.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/lab_background.png"));
-			headerUI[0] = ImageIO.read(getClass().getResourceAsStream("/resources/UI/headerUI.png"));
-			headerUI[1] = ImageIO.read(getClass().getResourceAsStream("/resources/UI/zones.png"));
+			backgrounds[Screen.page_ID.ITEM.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/item_background.png"));
+
 			
-			readSpriteSheet("/resources/animations/generator_animation.png", generator, 50, 48);
-			readSpriteSheet("/resources/animations/handle_animation.png", handle, 22, 20);
+			headerUI = ImageIO.read(getClass().getResourceAsStream("/resources/UI/headerUI.png"));
+			
+			readSpriteSheet("/resources/Items/misc_items.png", miscItems, 16, 16);
+			readSpriteSheet("/resources/Items/mining_items.png", miningItems, 16, 16);
+			readSpriteSheet("/resources/Items/woodcutting_items.png", woodcuttingItems, 16, 16);
+			readSpriteSheet("/resources/Items/fishing_items.png", fishingItems, 16, 16);
+			readSpriteSheet("/resources/Text/numbers.png", numbers, 11, 11);
+			
+			readSpriteSheet("/resources/Animations/generator_animation.png", generator, 50, 48);
+			readSpriteSheet("/resources/Animations/handle_animation.png", handle, 22, 20);
 			
 			
 		}
