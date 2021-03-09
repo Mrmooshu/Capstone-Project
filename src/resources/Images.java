@@ -11,7 +11,7 @@ import screens.Screen;
 public class Images {
 
 	//images
-	public static BufferedImage[] backgrounds,labUI,miningUI,woodcuttingUI,fishingUI,miscItems,miningItems,woodcuttingItems,fishingItems,numbers;
+	public static BufferedImage[] backgrounds,labUI,miningUI,woodcuttingUI,fishingUI,miscItems,miningItems,woodcuttingItems,fishingItems,numbers,letters;
 	//animation frames
 	public static BufferedImage[] generator, handle;
 	//image
@@ -27,6 +27,7 @@ public class Images {
 		woodcuttingItems = new BufferedImage[6];
 		fishingItems = new BufferedImage[6];
 		numbers = new BufferedImage[10];
+		letters = new BufferedImage[26];
 
 		generator = new BufferedImage[12];
 		handle = new BufferedImage[16];
@@ -34,6 +35,11 @@ public class Images {
 		try {
 			backgrounds[Screen.page_ID.LAB.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/lab_background.png"));
 			backgrounds[Screen.page_ID.ITEM.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/item_background.png"));
+			backgrounds[Screen.page_ID.ZONES.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/zones_background.png"));
+			backgrounds[Screen.page_ID.SETTINGS.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/settings_background.png"));
+			backgrounds[Screen.page_ID.MINING.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/mining_background.png"));
+			backgrounds[Screen.page_ID.WOODCUTTING.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/woodcutting_background.png"));
+			backgrounds[Screen.page_ID.FISHING.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/fishing_background.png"));
 
 			
 			headerUI = ImageIO.read(getClass().getResourceAsStream("/resources/UI/headerUI.png"));
@@ -43,6 +49,7 @@ public class Images {
 			readSpriteSheet("/resources/Items/woodcutting_items.png", woodcuttingItems, 16, 16);
 			readSpriteSheet("/resources/Items/fishing_items.png", fishingItems, 16, 16);
 			readSpriteSheet("/resources/Text/numbers.png", numbers, 11, 11);
+			readSpriteSheet("/resources/Text/letters.png", letters, 10, 10);
 			
 			readSpriteSheet("/resources/Animations/generator_animation.png", generator, 50, 48);
 			readSpriteSheet("/resources/Animations/handle_animation.png", handle, 22, 20);

@@ -7,6 +7,7 @@ import java.awt.event.MouseListener;
 import javax.swing.JPanel;
 
 import Data.Items;
+import Data.PlayerData;
 import resources.Images;
 import screens.LabScreen;
 import screens.Screen;
@@ -30,6 +31,7 @@ public class Game extends JPanel implements Runnable{
 	
 	public ScreenManager SM;
 	public Items inventory;
+	public PlayerData PD;
 	
 	public Game() {
 		setPreferredSize(new Dimension(SCREENWIDTH, SCREENHEIGHT));
@@ -37,6 +39,7 @@ public class Game extends JPanel implements Runnable{
 		new Images();
 		inventory = new Items();
 		SM = new ScreenManager(this);
+		PD = new PlayerData();
 		setLayout(null);
 		isRunning = true;
 		thread = new Thread(this);

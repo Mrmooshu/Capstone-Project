@@ -42,4 +42,8 @@ public class Animation {
 	public void setFrameCounter(int number) {
 		frameCounter = number;
 	}
+	
+	public void setFrameCounterToEnd() {
+		frameCounter = frameArray.length-1;
+	}
 }

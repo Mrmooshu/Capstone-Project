@@ -57,10 +57,13 @@ public class Items {
 		fishing_list = new Item[] {new Item(Images.fishingItems[0],"fish1",0),new Item(Images.fishingItems[1],
 				"fish2",1),new Item(Images.fishingItems[2],"fish3",2),new Item(Images.fishingItems[3],"fish4",
 						3),new Item(Images.fishingItems[4],"fish5",4),new Item(Images.fishingItems[5],"fish6",5)};
-		mining_list[0].Increase(325948);
-		woodcutting_list[5].Increase(69);
-		fishing_list[3].Increase(84750);
+		loadItems();
 	}	
+	
+	private void loadItems() {
+//		load item data
+	}
+	
 }
 
 

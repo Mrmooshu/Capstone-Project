@@ -13,7 +13,7 @@ import resources.Images;
 public class Screen {
 	
 	public enum page_ID {
-		LAB(0),SKILLS(1),ITEM(2),SETTINGS(3),MINING(4),WOODCUTTING(5),FISHING(6);
+		LAB(0),ZONES(1),SKILLS(2),ITEM(3),TASKS(4),SETTINGS(5),MINING(6),WOODCUTTING(7),FISHING(8);
 		public final int ID;
 		
 		private page_ID(int ID) {
@@ -36,7 +36,7 @@ public class Screen {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.print("zones");
-				game.SM.changePage(Screen.page_ID.LAB);
+				game.SM.changePage(new ZoneScreen(game));
 			}
 		});
 		skills.addActionListener(new ActionListener(){
@@ -49,7 +49,7 @@ public class Screen {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.print("items");
-				game.SM.changePage(Screen.page_ID.ITEM);
+				game.SM.changePage(new ItemScreen(game));
 			}
 		});
 		tasks.addActionListener(new ActionListener(){
@@ -62,28 +62,31 @@ public class Screen {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.print("settings");
+				game.SM.changePage(new SettingScreen(game));
 			}
 		});
 		
 		zones.setBounds(6,9, BUTTON_WIDTH, BUTTON_HEIGHT);
 	    zones.setContentAreaFilled(false);
-		game.add(zones);
 		skills.setBounds(6+(BUTTON_OFFSET),9, BUTTON_WIDTH, BUTTON_HEIGHT);
 		skills.setContentAreaFilled(false);
-		game.add(skills);
 		items.setBounds(6+(BUTTON_OFFSET*2),9, BUTTON_WIDTH, BUTTON_HEIGHT);
 		items.setContentAreaFilled(false);
-		game.add(items);
 		tasks.setBounds(6+(BUTTON_OFFSET*3),9, BUTTON_WIDTH, BUTTON_HEIGHT);
 		tasks.setContentAreaFilled(false);
-		game.add(tasks);
 		settings.setBounds(6+(BUTTON_OFFSET*4),9, BUTTON_WIDTH-125, BUTTON_HEIGHT);
 		settings.setContentAreaFilled(false);
-		game.add(settings);
+	}
+	
+	public JButton[] getButtons() {
+		return new JButton[]{zones,skills,items,tasks,settings};
 	}
 	
 	public BufferedImage numToImage(int n) {
 		return Images.numbers[n];
+	}
+	public BufferedImage letterToImage(char c) {
+		return Images.letters[(int)Character.toUpperCase(c)-65];
 	}
 	
 	public void tick() {

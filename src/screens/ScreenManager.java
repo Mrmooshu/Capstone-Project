@@ -2,31 +2,40 @@ package screens;
 
 import java.awt.Graphics;
 
+import javax.swing.JButton;
+
 import main.Game;
 
 public class ScreenManager {
 
-	public Screen[] pages;
-	public int page_count = Screen.page_ID.values().length;
-	public int current_page;
+	public Screen page;
+	private Game game;
+	private JButton[] activeButtons;
 	
 	public ScreenManager(Game game) {
-		pages = new Screen[page_count];
-		pages[Screen.page_ID.LAB.ID] = new LabScreen(game);
-		pages[Screen.page_ID.ITEM.ID] = new ItemScreen(game);
-		current_page = Screen.page_ID.LAB.ID;
+		this.game = game;
+		page = new LabScreen(game);
+		for (int i = 0; i < page.getButtons().length; i++) {
+			game.add(page.getButtons()[i]);
+		}
 	}
 	
 	public void tick() {
-		pages[current_page].tick();
+		page.tick();
 	}
 	
 	public void draw(Graphics g) {
-		pages[current_page].draw(g);
+		page.draw(g);
 	}
 	
-	public void changePage(Screen.page_ID page) {
-		current_page = page.ID;
+	public void changePage(Screen screen) {
+		for (int i = 0; i < page.getButtons().length; i++) {
+			game.remove(page.getButtons()[i]);
+		}
+		page = screen;
+		for (int i = 0; i < page.getButtons().length; i++) {
+			game.add(page.getButtons()[i]);
+		}
 	}
 	
 }

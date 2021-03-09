@@ -2,6 +2,8 @@ package screens;
 
 import java.awt.Graphics;
 
+import javax.swing.JButton;
+
 import Data.Items;
 import Data.Items.Item;
 import main.Game;
@@ -16,6 +18,9 @@ public class ItemScreen extends Screen {
 		this.inventory = game.inventory;
 	}
 
+	public JButton[] getButtons() {
+		return new JButton[]{zones,skills,items,tasks,settings};
+	}
 	
 	private void displayIcon(Item item, Graphics g, int x, int y) {
 		g.drawImage(item.Icon(),x*Game.SCREENSCALE,y*Game.SCREENSCALE,item.Icon().getWidth()*Game.ITEMICONSCALE,item.Icon().getHeight()*Game.ITEMICONSCALE,null);

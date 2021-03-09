@@ -42,7 +42,11 @@ public class LabScreen extends Screen{
 	    genButton.setContentAreaFilled(false);
 	    genButton.setBorderPainted(false);
 	    genButton.setOpaque(false);
-		game.add(genButton);
+	    handle.setFrameCounterToEnd();
+	}
+	
+	public JButton[] getButtons() {
+		return new JButton[]{zones,skills,items,tasks,settings,genButton};
 	}
 	
 	public void tick() {
