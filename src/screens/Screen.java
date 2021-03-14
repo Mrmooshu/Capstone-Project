@@ -7,6 +7,8 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JButton;
 
+import Data.Items;
+import Data.Items.Item;
 import main.Game;
 import resources.Images;
 
@@ -22,8 +24,11 @@ public class Screen {
 	}
 	private int BUTTON_WIDTH=192,BUTTON_HEIGHT=60,BUTTON_OFFSET=BUTTON_WIDTH+6;
 	
+	private final String LETTERS = "abcdefghijklmnopqrstuvwxyz.!? +-%:", NUMBERS = "0123456789";
+	
 	public BufferedImage background;
-	public JButton zones,skills,items,tasks,settings;	
+	public JButton zones,skills,items,tasks,settings;
+	public JButton[] headerButtons;
 	
 	public Screen(BufferedImage background, Game game) {
 		this.background = background;
@@ -32,6 +37,7 @@ public class Screen {
 		items = new JButton();
 		tasks = new JButton();
 		settings = new JButton();
+		headerButtons = new JButton[] {zones,skills,items,tasks,settings};
 		zones.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -78,15 +84,77 @@ public class Screen {
 		settings.setContentAreaFilled(false);
 	}
 	
-	public JButton[] getButtons() {
-		return new JButton[]{zones,skills,items,tasks,settings};
+	public void addButtons(Game game) {
+		for (int i = 0; i < headerButtons.length; i++) {
+			game.add(headerButtons[i]);
+		}
+	}
+	
+	public void removeButtons(Game game) {
+		for (int i = 0; i < headerButtons.length; i++) {
+			game.remove(headerButtons[i]);
+		}
 	}
 	
 	public BufferedImage numToImage(int n) {
 		return Images.numbers[n];
 	}
 	public BufferedImage letterToImage(char c) {
+		if (c == '.') {
+			return Images.letters[26];
+		}
+		else if (c == ' ') {
+			return Images.letters[29];
+		}
+		else if (c == '+') {
+			return Images.letters[30];
+		}
+		else if (c == '-') {
+			return Images.letters[31];
+		}
+		else if (c == '%') {
+			return Images.letters[32];
+		}
+		else if (c == ':') {
+			return Images.letters[33];
+		}
 		return Images.letters[(int)Character.toUpperCase(c)-65];
+	}
+	
+	public void displayText(String text, Graphics g, int x, int y) {
+		for (int i = 0; i < text.length(); i++) {
+			if (LETTERS.indexOf(text.toLowerCase().charAt(i))!=-1){
+				displayLetter(text.charAt(i), g, x+i*3, y);
+			}
+			if (NUMBERS.indexOf(text.charAt(i))!=-1) {
+				displayNum(Character.getNumericValue(text.charAt(i)), g, x+i*3, y);
+			}
+		}
+	}
+	
+	protected void displayIcon(Item item, Graphics g, int x, int y) {
+		g.drawImage(item.Icon(),x*Game.SCREENSCALE,y*Game.SCREENSCALE,item.Icon().getWidth()*Game.ITEMICONSCALE,item.Icon().getHeight()*Game.ITEMICONSCALE,null);
+	}
+	protected void displayNum(int n, Graphics g, int x, int y) {
+		g.drawImage(numToImage(n),x*Game.SCREENSCALE,y*Game.SCREENSCALE,numToImage(n).getWidth(),numToImage(n).getHeight(),null);
+	}
+	protected void displayLetter(char c, Graphics g, int x, int y) {
+		g.drawImage(letterToImage(c),x*Game.SCREENSCALE,y*Game.SCREENSCALE,letterToImage(c).getWidth(),letterToImage(c).getHeight(),null);
+	}
+	
+	protected void displayItems(Item[] items, Graphics g, int x, int y) {
+		for (int i = 0; i < items.length; i++) {
+			displayIcon(items[i], g, x, y+(i*10));
+			if (items[i].Quanity() == 0) {
+				displayNum(0, g, x+11, y+4+(i*10));
+			}
+			else {
+				String num = String.valueOf(items[i].Quanity());
+				for (int j = 0; j < num.length(); j++) {
+					displayNum(Integer.parseInt(num.substring(j,j+1)), g, x+11+(j*3), y+4+(i*10));
+				}
+			}
+		}
 	}
 	
 	public void tick() {

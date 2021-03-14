@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 
 import Data.Items;
 import Data.PlayerData;
+import Data.UpgradeTracker;
 import resources.Images;
 import screens.LabScreen;
 import screens.Screen;
@@ -32,14 +33,16 @@ public class Game extends JPanel implements Runnable{
 	public ScreenManager SM;
 	public Items inventory;
 	public PlayerData PD;
+	public UpgradeTracker UT;
 	
 	public Game() {
 		setPreferredSize(new Dimension(SCREENWIDTH, SCREENHEIGHT));
 		setFocusable(true);
 		new Images();
 		inventory = new Items();
+		UT = new UpgradeTracker();
 		SM = new ScreenManager(this);
-		PD = new PlayerData();
+		PD = new PlayerData(this);
 		setLayout(null);
 		isRunning = true;
 		thread = new Thread(this);

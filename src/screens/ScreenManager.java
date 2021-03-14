@@ -15,9 +15,7 @@ public class ScreenManager {
 	public ScreenManager(Game game) {
 		this.game = game;
 		page = new LabScreen(game);
-		for (int i = 0; i < page.getButtons().length; i++) {
-			game.add(page.getButtons()[i]);
-		}
+		page.addButtons(game);
 	}
 	
 	public void tick() {
@@ -29,13 +27,10 @@ public class ScreenManager {
 	}
 	
 	public void changePage(Screen screen) {
-		for (int i = 0; i < page.getButtons().length; i++) {
-			game.remove(page.getButtons()[i]);
-		}
+		page.removeButtons(game);
 		page = screen;
-		for (int i = 0; i < page.getButtons().length; i++) {
-			game.add(page.getButtons()[i]);
-		}
+		page.addButtons(game);
+		game.PD.saveData();
 	}
 	
 }

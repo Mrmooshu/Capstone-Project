@@ -11,7 +11,7 @@ import screens.Screen;
 public class Images {
 
 	//images
-	public static BufferedImage[] backgrounds,labUI,miningUI,woodcuttingUI,fishingUI,miscItems,miningItems,woodcuttingItems,fishingItems,numbers,letters;
+	public static BufferedImage[] backgrounds,LabUIicons,LabUI,skillicons,miningcharacter,woodcuttingcharacter,fishingcharacter,miningUI,woodcuttingUI,fishingUI,items,numbers,letters;
 	//animation frames
 	public static BufferedImage[] generator, handle;
 	//image
@@ -20,14 +20,16 @@ public class Images {
 	public Images() {
 		
 		backgrounds = new BufferedImage[Screen.page_ID.values().length];
-		labUI = new BufferedImage[0];
+		LabUIicons = new BufferedImage[3];
+		LabUI = new BufferedImage[1];
+		skillicons = new BufferedImage[9];
+		miningcharacter = new BufferedImage[3];
+		woodcuttingcharacter = new BufferedImage[3];
+		fishingcharacter = new BufferedImage[3];
 		
-		miscItems = new BufferedImage[1];
-		miningItems = new BufferedImage[6];
-		woodcuttingItems = new BufferedImage[6];
-		fishingItems = new BufferedImage[6];
+		items = new BufferedImage[200];
 		numbers = new BufferedImage[10];
-		letters = new BufferedImage[26];
+		letters = new BufferedImage[34];
 
 		generator = new BufferedImage[12];
 		handle = new BufferedImage[16];
@@ -41,16 +43,24 @@ public class Images {
 			backgrounds[Screen.page_ID.WOODCUTTING.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/woodcutting_background.png"));
 			backgrounds[Screen.page_ID.FISHING.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/fishing_background.png"));
 
-			
+//			UI
 			headerUI = ImageIO.read(getClass().getResourceAsStream("/resources/UI/headerUI.png"));
+			readSpriteSheet("/resources/UI/lab_UI_icons.png", LabUIicons, 16, 16);
+			LabUI[0] = ImageIO.read(getClass().getResourceAsStream("/resources/UI/lab_character_interface.png"));
+			readSpriteSheet("/resources/UI/skill_icons.png", skillicons, 16, 16);
+//			character sprites
+			readSpriteSheet("/resources/Characters/golems.png",miningcharacter,80,80);
+			readSpriteSheet("/resources/Characters/sentinels.png",woodcuttingcharacter,80,80);
+			readSpriteSheet("/resources/Characters/robots.png",fishingcharacter,80,80);
+
+
 			
-			readSpriteSheet("/resources/Items/misc_items.png", miscItems, 16, 16);
-			readSpriteSheet("/resources/Items/mining_items.png", miningItems, 16, 16);
-			readSpriteSheet("/resources/Items/woodcutting_items.png", woodcuttingItems, 16, 16);
-			readSpriteSheet("/resources/Items/fishing_items.png", fishingItems, 16, 16);
-			readSpriteSheet("/resources/Text/numbers.png", numbers, 11, 11);
+//			item icons
+			readSpriteSheet("/resources/Items/items.png", items, 16, 16);
+			readSpriteSheet("/resources/Text/numbers.png", numbers, 10, 10);
 			readSpriteSheet("/resources/Text/letters.png", letters, 10, 10);
 			
+//			animations
 			readSpriteSheet("/resources/Animations/generator_animation.png", generator, 50, 48);
 			readSpriteSheet("/resources/Animations/handle_animation.png", handle, 22, 20);
 			

@@ -7,63 +7,47 @@ import resources.Images;
 public class Items {
 	
 	public class Item {
-		private int Quanity;
+		private long Quanity;
 		private BufferedImage Icon;
-		private int ID;
-		private String name;
 		
-		public Item(BufferedImage Icon, String name, int ID) {
-			this.Icon = Icon;
-			this.name = name;
-			this.ID = ID;
+		public Item(int ID) {
+			Icon = Images.items[ID];
 			Quanity = 0;
+		}
+		public void Increase(Long amount) {
+			Quanity += amount;
 		}
 		public void Increase(int amount) {
 			Quanity += amount;
 		}
+		public void Decrease(Long amount) {
+			Quanity -= amount;
+		}
 		public void Decrease(int amount) {
 			Quanity -= amount;
 		}
-		public int Quanity() {
+		public long Quanity() {
 			return Quanity;
-		}
-		public String Name() {
-			return name;
 		}
 		public BufferedImage Icon() {
 			return Icon;
 		}
-		public int ID() {
-			return ID;
-		}
 	}
-	public Item[] misc_list;
-	public Item[] mining_list;
-	public Item[] woodcutting_list;
-	public Item[] fishing_list;
+	
+	int miscStart=0,miscEnd=9,miningStart=10,miningEnd=19,woodcuttingStart=20,woodcuttingEnd=29,fishingStart=30,fishingEnd=39,smithingStart=40,smithingEnd=49,craftingStart=50,craftingEnd=59,cookingStart=60,cookingEnd=69;
+	
+	public Item[] itemList;
+	public int itemCount = 100;
 
 	
 	public Items() {
-		misc_list = new Item[] {new Item(Images.miscItems[0],"power",0)};
 		
-		mining_list = new Item[] {new Item(Images.miningItems[0],"copper",0),new Item(Images.miningItems[1],"iron",1),
-				new Item(Images.miningItems[2],"copper",2),new Item(Images.miningItems[3],"copper",3),
-				new Item(Images.miningItems[4],"copper",4),new Item(Images.miningItems[5],"copper",5)};
+		itemList = new Item[itemCount];
+		for (int i = 0; i < itemList.length; i++) {
+			itemList[i] = new Item(i);
+		}
 		
-		woodcutting_list = new Item[] {new Item(Images.woodcuttingItems[0],"oak",0),new Item(Images.woodcuttingItems[1],"birch",1),
-				new Item(Images.woodcuttingItems[2],"teak",2),new Item(Images.woodcuttingItems[3],"willow",3),
-				new Item(Images.woodcuttingItems[4],"mahogany",4),new Item(Images.woodcuttingItems[5],"maple",5)};
-		
-		fishing_list = new Item[] {new Item(Images.fishingItems[0],"fish1",0),new Item(Images.fishingItems[1],
-				"fish2",1),new Item(Images.fishingItems[2],"fish3",2),new Item(Images.fishingItems[3],"fish4",
-						3),new Item(Images.fishingItems[4],"fish5",4),new Item(Images.fishingItems[5],"fish6",5)};
-		loadItems();
 	}	
-	
-	private void loadItems() {
-//		load item data
-	}
-	
 }
 
 

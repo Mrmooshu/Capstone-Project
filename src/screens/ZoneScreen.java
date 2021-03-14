@@ -12,6 +12,7 @@ import resources.Images;
 public class ZoneScreen extends Screen{
 	
 	public JButton labButton, miningButton, woodcuttingButton, fishingButton;
+	private JButton[] zoneButtons;
 
 	public ZoneScreen(Game game) {
 		super(Images.backgrounds[Screen.page_ID.ZONES.ID], game);
@@ -19,6 +20,7 @@ public class ZoneScreen extends Screen{
 		miningButton = new JButton();
 		woodcuttingButton = new JButton();
 		fishingButton = new JButton();
+		zoneButtons = new JButton[] {labButton, miningButton, woodcuttingButton, fishingButton};
 		labButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -53,8 +55,18 @@ public class ZoneScreen extends Screen{
 	    fishingButton.setContentAreaFilled(false);
 	}
 	
-	public JButton[] getButtons() {
-		return new JButton[]{zones,skills,items,tasks,settings,labButton,miningButton,woodcuttingButton,fishingButton};
+	public void addButtons(Game game) {
+		super.addButtons(game);
+		for (int i = 0; i < zoneButtons.length; i++) {
+			game.add(zoneButtons[i]);
+		}
+	}
+	
+	public void removeButtons(Game game) {
+		super.removeButtons(game);
+		for (int i = 0; i < zoneButtons.length; i++) {
+			game.remove(zoneButtons[i]);
+		}
 	}
 	
 	public void tick() {
