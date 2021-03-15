@@ -15,12 +15,12 @@ public class UpgradeTracker {
 		private double bonusPerLevel;
 		private int[] itemCostperLevelID;
 		private int[] itemCostperLevelQuantity;
-		public Upgrade(String text, int[] itemCostperLevelID, int[] itemCostperLevelQuantity, int levelMax, double bonusPerLevel, bonus_type bonusType) {
+		public Upgrade(String text, int[] itemCostperLevelID, int[] itemCostperLevelQuantity, double bonusPerLevel, bonus_type bonusType) {
 			this.text=text;
 			this.itemCostperLevelID = itemCostperLevelID;
 			this.itemCostperLevelQuantity = itemCostperLevelQuantity;
 			this.levelCurrent = 0;
-			this.levelMax = levelMax;
+			this.levelMax = itemCostperLevelID.length;
 			this.bonusPerLevel=bonusPerLevel;
 			this.bonusType=bonusType;
 		}
@@ -93,26 +93,26 @@ public class UpgradeTracker {
 	public UpgradeTracker() {
 		
 		Upgrade[] miningPowerUpgrades = new Upgrade[] {
-				labMining0 = new Upgrade("miningpower+",new int[] {10,10,10},new int[] {50,100,150},100,1,bonus_type.ADDITIVE),
+				labMining0 = new Upgrade("miningpower+",new int[] {10,10,10},new int[] {50,100,150},1,bonus_type.ADDITIVE),
 		};
 		
 		Upgrade[] miningCritChanceUpgrades = new Upgrade[] {
-				labMining1 = new Upgrade("miningCrit%+",new int[] {11,11,11},new int[] {20,40,60},100,.5,bonus_type.ADDITIVE),
+				labMining1 = new Upgrade("miningCrit%+",new int[] {11,11,11},new int[] {20,40,60},.5,bonus_type.ADDITIVE),
 		};
 
 		Upgrade[] miningCritModUpgrades = new Upgrade[] {
-				labMining2 = new Upgrade("miningCritMod+",new int[] {12,12,12},new int[] {10,20,30},100,5,bonus_type.ADDITIVE)
+				labMining2 = new Upgrade("miningCritMod+",new int[] {12,12,12},new int[] {10,20,30},5,bonus_type.ADDITIVE)
 		};
 		
 		Upgrade[] woodcuttingPowerUpgrades = new Upgrade[] {
-				labWoodcutting0 = new Upgrade("woodcuttingpower+",new int[] {10,10,10},new int[] {50,100,150},100,1,bonus_type.ADDITIVE),
-				labWoodcutting1 = new Upgrade("woodcuttingpower+",new int[] {10,10,10},new int[] {50,100,150},100,1,bonus_type.ADDITIVE),
-				labWoodcutting2 = new Upgrade("woodcuttingpower+",new int[] {10,10,10},new int[] {50,100,150},100,1,bonus_type.ADDITIVE),
+				labWoodcutting0 = new Upgrade("woodcuttingpower+",new int[] {10,10,10},new int[] {50,100,150},1,bonus_type.ADDITIVE),
+				labWoodcutting1 = new Upgrade("woodcuttingpower+",new int[] {10,10,10},new int[] {50,100,150},1,bonus_type.ADDITIVE),
+				labWoodcutting2 = new Upgrade("woodcuttingpower+",new int[] {10,10,10},new int[] {50,100,150},1,bonus_type.ADDITIVE),
 		};
 		Upgrade[] fishingPowerUpgrades = new Upgrade[] {
-				labFishing0 = new Upgrade("fishingpower+",new int[] {10,10,10},new int[] {50,100,150},100,1,bonus_type.ADDITIVE),
-				labFishing1 = new Upgrade("fishingpower+",new int[] {10,10,10},new int[] {50,100,150},100,1,bonus_type.ADDITIVE),
-				labFishing2 = new Upgrade("fishingpower+",new int[] {10,10,10},new int[] {50,100,150},100,1,bonus_type.ADDITIVE),
+				labFishing0 = new Upgrade("fishingpower+",new int[] {10,10,10},new int[] {50,100,150},1,bonus_type.ADDITIVE),
+				labFishing1 = new Upgrade("fishingpower+",new int[] {10,10,10},new int[] {50,100,150},1,bonus_type.ADDITIVE),
+				labFishing2 = new Upgrade("fishingpower+",new int[] {10,10,10},new int[] {50,100,150},1,bonus_type.ADDITIVE),
 		};
 
 		

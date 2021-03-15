@@ -137,9 +137,14 @@ public class LabScreen extends Screen{
 		displayText(""+charSelected,g,40,70);
 		displayText("Level:"+findSelected().getCurrentLevel(),g,13,130);
 		displayText("Bonus:"+findSelected().getBonusText(),g,13,92);
-		displayText(""+findSelected().getCost()[1],g,36,112);
-		displayIcon(game.inventory.itemList[findSelected().getCost()[0]],g,24,108);
-		displayText("cost:",g,12,112);
+		if (findSelected().getCurrentLevel()==findSelected().getLevelMax()) {
+			displayText("MAX",g,12,112);
+		}
+		else {
+			displayText(game.inventory.itemList[findSelected().getCost()[0]].Quanity()+"/"+findSelected().getCost()[1],g,38,112);
+			displayIcon(game.inventory.itemList[findSelected().getCost()[0]],g,27,108);
+			displayText("cost:",g,12,112);
+		}
 		if (findSelected().getCurrentLevel() == 0) {
 			g.drawImage(Images.LabUIicons[2],79*Game.SCREENSCALE,126*Game.SCREENSCALE,32,32,null);
 		}
@@ -168,16 +173,11 @@ public class LabScreen extends Screen{
 		
 	}
 	
-	private void displayUpgradeCost(Items.Item cost) {
-		
-	}
-	
-	private void displayBonus(PlayerData p) {
-		
-	}
-	
 	private void attemptUpgrade(Upgrade upgrade) {
-		if (upgrade.getCost()[1] <= game.inventory.itemList[upgrade.getCost()[0]].Quanity()) {
+		if (upgrade.getCurrentLevel()==upgrade.getLevelMax()) {
+			System.out.print("max level");
+		}
+		else if (upgrade.getCost()[1] <= game.inventory.itemList[upgrade.getCost()[0]].Quanity()) {
 			game.inventory.itemList[upgrade.getCost()[0]].Decrease(upgrade.getCost()[1]);
 			upgrade.setCurrentLevel(upgrade.getCurrentLevel()+1);
 		}

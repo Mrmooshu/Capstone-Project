@@ -29,7 +29,7 @@ public class Images {
 		
 		items = new BufferedImage[200];
 		numbers = new BufferedImage[10];
-		letters = new BufferedImage[34];
+		letters = new BufferedImage[35];
 
 		generator = new BufferedImage[12];
 		handle = new BufferedImage[16];

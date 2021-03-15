@@ -13,9 +13,37 @@ public class ZoneScreen extends Screen{
 	
 	public JButton labButton, miningButton, woodcuttingButton, fishingButton;
 	private JButton[] zoneButtons;
+	private Game game;
 
 	public ZoneScreen(Game game) {
 		super(Images.backgrounds[Screen.page_ID.ZONES.ID], game);
+		this.game=game;
+		defineButtons();
+	}
+	
+	public void addButtons(Game game) {
+		super.addButtons(game);
+		for (int i = 0; i < zoneButtons.length; i++) {
+			game.add(zoneButtons[i]);
+		}
+	}
+	
+	public void removeButtons(Game game) {
+		super.removeButtons(game);
+		for (int i = 0; i < zoneButtons.length; i++) {
+			game.remove(zoneButtons[i]);
+		}
+	}
+	
+	public void tick() {
+		
+	}
+	
+	public void draw(Graphics g) {
+		super.draw(g);
+	}
+	
+	private void defineButtons() {
 		labButton = new JButton();
 		miningButton = new JButton();
 		woodcuttingButton = new JButton();
@@ -53,28 +81,6 @@ public class ZoneScreen extends Screen{
 	    woodcuttingButton.setContentAreaFilled(false);
 	    fishingButton.setBounds((185)*Game.SCREENSCALE,(32)*Game.SCREENSCALE, 32*Game.SCREENSCALE, 32*Game.SCREENSCALE);
 	    fishingButton.setContentAreaFilled(false);
-	}
-	
-	public void addButtons(Game game) {
-		super.addButtons(game);
-		for (int i = 0; i < zoneButtons.length; i++) {
-			game.add(zoneButtons[i]);
-		}
-	}
-	
-	public void removeButtons(Game game) {
-		super.removeButtons(game);
-		for (int i = 0; i < zoneButtons.length; i++) {
-			game.remove(zoneButtons[i]);
-		}
-	}
-	
-	public void tick() {
-		
-	}
-	
-	public void draw(Graphics g) {
-		super.draw(g);
 	}
 	
 }

@@ -12,16 +12,21 @@ import screens.Screen;
 public class PlayerData {
 
 	String saveFile = "src/Data/Save/savefile.txt";
-	Items inventory;
-	UpgradeTracker upgrades;
+	Game game;
 	private double miningExp,woodcuttingExp,fishingExp;
 	private int miningLvl,woodcuttingLvl,fishingLvl;
 	
 	public PlayerData(Game game) {
-		this.inventory = game.inventory;
-		this.upgrades = game.UT;
+		this.game = game;
 		miningExp = woodcuttingExp = fishingExp = 0.0;
 		loadData();
+	}
+
+
+	public void resetData() {
+		game.inventory=new Items();
+		game.UT=new UpgradeTracker();
+		saveData();
 	}
 	
 	
@@ -34,13 +39,13 @@ public class PlayerData {
 			woodcuttingExp = Double.parseDouble(br.readLine());
 			fishingExp = Double.parseDouble(br.readLine());
 //			items
-			for (int i = 0; i < inventory.itemList.length; i++) {
-				inventory.itemList[i].Increase(Long.parseLong(br.readLine()));
+			for (int i = 0; i < game.inventory.itemList.length; i++) {
+				game.inventory.itemList[i].Increase(Long.parseLong(br.readLine()));
 			}
 //			upgrade levels
-			for (int i = 0; i < upgrades.upgradeList.length; i++) {
-				for (int j = 0; j < upgrades.upgradeList[i].length; j++) {
-					upgrades.upgradeList[i][j].setCurrentLevel(Integer.parseInt(br.readLine()));
+			for (int i = 0; i < game.UT.upgradeList.length; i++) {
+				for (int j = 0; j < game.UT.upgradeList[i].length; j++) {
+					game.UT.upgradeList[i][j].setCurrentLevel(Integer.parseInt(br.readLine()));
 				}
 			}
 			br.close();
@@ -60,13 +65,13 @@ public class PlayerData {
 			bw.write(""+woodcuttingExp); bw.newLine();
 			bw.write(""+fishingExp); bw.newLine();
 //			items
-			for (int i = 0; i < inventory.itemList.length; i++) {
-				bw.write(""+inventory.itemList[i].Quanity()); bw.newLine();
+			for (int i = 0; i < game.inventory.itemList.length; i++) {
+				bw.write(""+game.inventory.itemList[i].Quanity()); bw.newLine();
 			}
 //			upgrade levels
-			for (int i = 0; i < upgrades.upgradeList.length; i++) {
-				for (int j = 0; j < upgrades.upgradeList[i].length; j++) {
-					bw.write(""+upgrades.upgradeList[i][j].getCurrentLevel());bw.newLine();
+			for (int i = 0; i < game.UT.upgradeList.length; i++) {
+				for (int j = 0; j < game.UT.upgradeList[i].length; j++) {
+					bw.write(""+game.UT.upgradeList[i][j].getCurrentLevel());bw.newLine();
 				}
 			}
 			bw.close();

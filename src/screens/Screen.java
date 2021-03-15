@@ -24,7 +24,7 @@ public class Screen {
 	}
 	private int BUTTON_WIDTH=192,BUTTON_HEIGHT=60,BUTTON_OFFSET=BUTTON_WIDTH+6;
 	
-	private final String LETTERS = "abcdefghijklmnopqrstuvwxyz.!? +-%:", NUMBERS = "0123456789";
+	private final String LETTERS = "abcdefghijklmnopqrstuvwxyz.!? +-%:/", NUMBERS = "0123456789";
 	
 	public BufferedImage background;
 	public JButton zones,skills,items,tasks,settings;
@@ -117,6 +117,9 @@ public class Screen {
 		}
 		else if (c == ':') {
 			return Images.letters[33];
+		}
+		else if (c == '/') {
+			return Images.letters[34];
 		}
 		return Images.letters[(int)Character.toUpperCase(c)-65];
 	}
