@@ -16,7 +16,7 @@ import screens.ScreenManager;
 
 public class Game extends JPanel implements Runnable{
 	private static final long serialVersionUID = 1L;
-
+	
 	public static final int SCREENSCALE = 3;
 	public static final int ITEMICONSCALE = 2;
 	public static final int WIDTH = 290;
@@ -34,7 +34,7 @@ public class Game extends JPanel implements Runnable{
 	public Items inventory;
 	public PlayerData PD;
 	public UpgradeTracker UT;
-	
+		
 	public Game() {
 		setPreferredSize(new Dimension(SCREENWIDTH, SCREENHEIGHT));
 		setFocusable(true);
@@ -54,7 +54,6 @@ public class Game extends JPanel implements Runnable{
 		long start, elapsed, wait;
 		while(isRunning) {
 			start = System.nanoTime();
-			tick();
 			repaint();
 			elapsed = System.nanoTime() - start;
 			wait = targetTime - elapsed / 1000000;
@@ -70,10 +69,6 @@ public class Game extends JPanel implements Runnable{
 			}
 			
 		}
-	}
-	
-	public void tick() {
-		
 	}
 	
 	public void paintComponent(Graphics g) {

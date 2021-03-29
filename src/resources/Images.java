@@ -11,7 +11,11 @@ import screens.Screen;
 public class Images {
 
 	//images
-	public static BufferedImage[] backgrounds,LabUIicons,LabUI,skillicons,miningcharacter,woodcuttingcharacter,fishingcharacter,miningUI,woodcuttingUI,fishingUI,items,numbers,letters;
+	public static BufferedImage[] backgrounds,skillicons,staticons,items,numbers,letters;
+	public static BufferedImage[] LabUIicons,LabUI;
+	public static BufferedImage[] miningcharacter,miningUIicons,miningUI,miningRocks;	
+	public static BufferedImage[] woodcuttingcharacter,woodcuttingUI;
+	public static BufferedImage[] fishingcharacter,fishingUI;
 	//animation frames
 	public static BufferedImage[] generator, handle;
 	//image
@@ -23,8 +27,15 @@ public class Images {
 		LabUIicons = new BufferedImage[3];
 		LabUI = new BufferedImage[1];
 		skillicons = new BufferedImage[9];
+		staticons = new BufferedImage[9];
+		
 		miningcharacter = new BufferedImage[3];
+		miningUI = new BufferedImage[2];
+		miningUIicons = new BufferedImage[4];
+		miningRocks = new BufferedImage[6];
+		
 		woodcuttingcharacter = new BufferedImage[3];
+		
 		fishingcharacter = new BufferedImage[3];
 		
 		items = new BufferedImage[200];
@@ -45,17 +56,27 @@ public class Images {
 
 //			UI
 			headerUI = ImageIO.read(getClass().getResourceAsStream("/resources/UI/headerUI.png"));
+			
 			readSpriteSheet("/resources/UI/lab_UI_icons.png", LabUIicons, 16, 16);
 			LabUI[0] = ImageIO.read(getClass().getResourceAsStream("/resources/UI/lab_character_interface.png"));
+			
+			readSpriteSheet("/resources/UI/mining_UI_icons.png",miningUIicons,16,16);
+			miningUI[0] = ImageIO.read(getClass().getResourceAsStream("/resources/UI/mining_upgrade_interface.png"));
+			miningUI[1] = ImageIO.read(getClass().getResourceAsStream("/resources/UI/mining_stat_interface.png"));
+
 			readSpriteSheet("/resources/UI/skill_icons.png", skillicons, 16, 16);
-//			character sprites
+			readSpriteSheet("/resources/UI/stat_icons.png", staticons, 16, 16);
+			
+//			skilling sprites
 			readSpriteSheet("/resources/Characters/golems.png",miningcharacter,80,80);
+			readSpriteSheet("/resources/Props/mining_rocks.png",miningRocks,42,14);
+			
 			readSpriteSheet("/resources/Characters/sentinels.png",woodcuttingcharacter,80,80);
 			readSpriteSheet("/resources/Characters/robots.png",fishingcharacter,80,80);
 
 
 			
-//			item icons
+//			item and text icons
 			readSpriteSheet("/resources/Items/items.png", items, 16, 16);
 			readSpriteSheet("/resources/Text/numbers.png", numbers, 10, 10);
 			readSpriteSheet("/resources/Text/letters.png", letters, 10, 10);

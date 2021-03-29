@@ -9,7 +9,9 @@ import javax.swing.JButton;
 
 import Data.Items;
 import Data.Items.Item;
+import Data.UpgradeTracker.Upgrade;
 import main.Game;
+import resources.Animation;
 import resources.Images;
 
 public class Screen {
@@ -26,62 +28,22 @@ public class Screen {
 	
 	private final String LETTERS = "abcdefghijklmnopqrstuvwxyz.!? +-%:/", NUMBERS = "0123456789";
 	
+	private Game game;
+		
 	public BufferedImage background;
 	public JButton zones,skills,items,tasks,settings;
 	public JButton[] headerButtons;
 	
 	public Screen(BufferedImage background, Game game) {
 		this.background = background;
+		this.game=game;
 		zones = new JButton();
 		skills = new JButton();
 		items = new JButton();
 		tasks = new JButton();
 		settings = new JButton();
 		headerButtons = new JButton[] {zones,skills,items,tasks,settings};
-		zones.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.out.print("zones");
-				game.SM.changePage(new ZoneScreen(game));
-			}
-		});
-		skills.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.out.print("skills");
-			}
-		});
-		items.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.out.print("items");
-				game.SM.changePage(new ItemScreen(game));
-			}
-		});
-		tasks.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.out.print("tasks");
-			}
-		});
-		settings.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.out.print("settings");
-				game.SM.changePage(new SettingScreen(game));
-			}
-		});
-		
-		zones.setBounds(6,9, BUTTON_WIDTH, BUTTON_HEIGHT);
-	    zones.setContentAreaFilled(false);
-		skills.setBounds(6+(BUTTON_OFFSET),9, BUTTON_WIDTH, BUTTON_HEIGHT);
-		skills.setContentAreaFilled(false);
-		items.setBounds(6+(BUTTON_OFFSET*2),9, BUTTON_WIDTH, BUTTON_HEIGHT);
-		items.setContentAreaFilled(false);
-		tasks.setBounds(6+(BUTTON_OFFSET*3),9, BUTTON_WIDTH, BUTTON_HEIGHT);
-		tasks.setContentAreaFilled(false);
-		settings.setBounds(6+(BUTTON_OFFSET*4),9, BUTTON_WIDTH-125, BUTTON_HEIGHT);
-		settings.setContentAreaFilled(false);
+		defineButtons();
 	}
 	
 	public void addButtons(Game game) {
@@ -160,11 +122,68 @@ public class Screen {
 		}
 	}
 	
-	public void tick() {
-		
+	protected void attemptUpgrade(Upgrade upgrade) {
+		if (upgrade.getCurrentLevel()==upgrade.getLevelMax()) {
+			System.out.print("max level");
+		}
+		else if (upgrade.getCost()[1] <= game.inventory.itemList[upgrade.getCost()[0]].Quanity()) {
+			game.inventory.itemList[upgrade.getCost()[0]].Decrease(upgrade.getCost()[1]);
+			upgrade.setCurrentLevel(upgrade.getCurrentLevel()+1);
+		}
+		else {
+			System.out.print("cant afford");
+		}
 	}
+	
 	public void draw(Graphics g) {
 		g.drawImage(background,0,0,background.getWidth()*Game.SCREENSCALE,background.getHeight()*Game.SCREENSCALE,null);
 		g.drawImage(Images.headerUI,0,0,Images.headerUI.getWidth()*Game.SCREENSCALE,Images.headerUI.getHeight()*Game.SCREENSCALE,null);
+	}
+	
+	private void defineButtons() {
+		zones.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.print("zones");
+				game.SM.changePage(new ZoneScreen(game));
+			}
+		});
+		skills.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.print("skills");
+			}
+		});
+		items.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.print("items");
+				game.SM.changePage(new ItemScreen(game));
+			}
+		});
+		tasks.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.print("tasks");
+			}
+		});
+		settings.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.print("settings");
+				game.SM.changePage(new SettingScreen(game));
+			}
+		});
+		
+		zones.setBounds(6,9, BUTTON_WIDTH, BUTTON_HEIGHT);
+	    zones.setContentAreaFilled(false);
+		skills.setBounds(6+(BUTTON_OFFSET),9, BUTTON_WIDTH, BUTTON_HEIGHT);
+		skills.setContentAreaFilled(false);
+		items.setBounds(6+(BUTTON_OFFSET*2),9, BUTTON_WIDTH, BUTTON_HEIGHT);
+		items.setContentAreaFilled(false);
+		tasks.setBounds(6+(BUTTON_OFFSET*3),9, BUTTON_WIDTH, BUTTON_HEIGHT);
+		tasks.setContentAreaFilled(false);
+		settings.setBounds(6+(BUTTON_OFFSET*4),9, BUTTON_WIDTH-125, BUTTON_HEIGHT);
+		settings.setContentAreaFilled(false);
 	}
 }

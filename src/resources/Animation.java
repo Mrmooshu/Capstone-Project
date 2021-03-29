@@ -43,6 +43,10 @@ public class Animation {
 		frameCounter = number;
 	}
 	
+	public int getFrameCounter() {
+		return frameCounter;
+	}
+	
 	public void setFrameCounterToEnd() {
 		frameCounter = frameArray.length-1;
 	}

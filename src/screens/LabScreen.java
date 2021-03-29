@@ -33,8 +33,8 @@ public class LabScreen extends Screen{
 		}
 	}
 	
-	lab_page_ID labPage;
-	skill_tab skillTab;
+	private lab_page_ID labPage;
+	private skill_tab skillTab;
 	private int charSelected;
 	private final static int varriantNum = 3;
 	
@@ -130,13 +130,14 @@ public class LabScreen extends Screen{
 	}
 	
 	private void drawCharacterPage(Graphics g) {
-		g.drawImage(Images.LabUI[0],5*Game.SCREENSCALE,32*Game.SCREENSCALE,101*Game.SCREENSCALE,112*Game.SCREENSCALE,null);
+		g.drawImage(Images.LabUI[0],5*Game.SCREENSCALE,32*Game.SCREENSCALE,Images.LabUI[0].getWidth()*Game.SCREENSCALE,Images.LabUI[0].getHeight()*Game.SCREENSCALE,null);
 		g.drawImage(Images.skillicons[1],8*Game.SCREENSCALE,35*Game.SCREENSCALE,32,32,null);
 		g.drawImage(Images.skillicons[0],25*Game.SCREENSCALE,35*Game.SCREENSCALE,32,32,null);
 		g.drawImage(Images.skillicons[2],42*Game.SCREENSCALE,35*Game.SCREENSCALE,32,32,null);
 		displayText(""+charSelected,g,40,70);
 		displayText("Level:"+findSelected().getCurrentLevel(),g,13,130);
-		displayText("Bonus:"+findSelected().getBonusText(),g,13,92);
+		displayText("Bonus:"+findSelected().getText(),g,13,89);
+		displayText(findSelected().getBonusText(),g,13,94);
 		if (findSelected().getCurrentLevel()==findSelected().getLevelMax()) {
 			displayText("MAX",g,12,112);
 		}
@@ -173,18 +174,7 @@ public class LabScreen extends Screen{
 		
 	}
 	
-	private void attemptUpgrade(Upgrade upgrade) {
-		if (upgrade.getCurrentLevel()==upgrade.getLevelMax()) {
-			System.out.print("max level");
-		}
-		else if (upgrade.getCost()[1] <= game.inventory.itemList[upgrade.getCost()[0]].Quanity()) {
-			game.inventory.itemList[upgrade.getCost()[0]].Decrease(upgrade.getCost()[1]);
-			upgrade.setCurrentLevel(upgrade.getCurrentLevel()+1);
-		}
-		else {
-			System.out.print("cant afford");
-		}
-	}
+
 	
 	private Upgrade findSelected() {
 		switch(skillTab) {
@@ -202,9 +192,9 @@ public class LabScreen extends Screen{
 			case 0:
 				return game.UT.labWoodcutting0;
 			case 1:
-				return game.UT.labWoodcutting2;
-			case 2:
 				return game.UT.labWoodcutting1;
+			case 2:
+				return game.UT.labWoodcutting2;
 			}
 		case FISHING:
 			switch(charSelected) {
@@ -217,10 +207,6 @@ public class LabScreen extends Screen{
 			}
 		}
 		return null;
-	}
-	
-	public void tick() {
-		
 	}
 	
 	public void draw(Graphics g) {
