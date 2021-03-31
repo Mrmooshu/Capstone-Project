@@ -41,7 +41,7 @@ public class LabScreen extends Screen{
 	private Game game;
 	
 	public Animation generator = new Animation(Images.generator, 2);
-	public Animation handle = new Animation(Images.handle, 2);
+	public Animation handle = new Animation(Images.handle, 1);
 
 	private Items inventory;
 	
@@ -59,6 +59,7 @@ public class LabScreen extends Screen{
 		defineButtons();
 		labButtons = new LinkedList<JButton>();
 		changeLabPage(lab_page_ID.GENERATOR);
+	    handle.setFrameCounterToEnd();
 	}
 	
 	public void addButtons(Game game) {
@@ -276,7 +277,6 @@ public class LabScreen extends Screen{
 			});
 		genButton.setBounds((Game.WIDTH/2-50)*Game.SCREENSCALE,(Game.HEIGHT/2-40)*Game.SCREENSCALE, 100*Game.SCREENSCALE, 80*Game.SCREENSCALE);
 		genButton.setContentAreaFilled(false);
-	    handle.setFrameCounterToEnd();
 	    
 		skill1Button = new JButton();
 		skill1Button.addActionListener(new ActionListener(){

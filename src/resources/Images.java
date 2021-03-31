@@ -9,6 +9,12 @@ import javax.imageio.ImageIO;
 import screens.Screen;
 
 public class Images {
+	
+//	constants
+	public static final int RED = 0;
+	public static final int GREEN = 1;
+	public static final int BLUE = 2;
+
 
 	//images
 	public static BufferedImage[] backgrounds,skillicons,staticons,items,numbers,letters;
@@ -16,8 +22,9 @@ public class Images {
 	public static BufferedImage[] miningcharacter,miningUIicons,miningUI,miningRocks;	
 	public static BufferedImage[] woodcuttingcharacter,woodcuttingUI;
 	public static BufferedImage[] fishingcharacter,fishingUI;
+	public static BufferedImage[] numbersred;
 	//animation frames
-	public static BufferedImage[] generator, handle;
+	public static BufferedImage[] generator, handle, mininganimation;
 	//image
 	public static BufferedImage headerUI;
 	
@@ -40,10 +47,12 @@ public class Images {
 		
 		items = new BufferedImage[200];
 		numbers = new BufferedImage[10];
+		numbersred = new BufferedImage[10];
 		letters = new BufferedImage[35];
 
 		generator = new BufferedImage[12];
 		handle = new BufferedImage[16];
+		mininganimation = new BufferedImage[9];
 		
 		try {
 			backgrounds[Screen.page_ID.LAB.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/lab_background.png"));
@@ -84,7 +93,10 @@ public class Images {
 //			animations
 			readSpriteSheet("/resources/Animations/generator_animation.png", generator, 50, 48);
 			readSpriteSheet("/resources/Animations/handle_animation.png", handle, 22, 20);
+			readSpriteSheet("/resources/Animations/miningAnimation.png", mininganimation, 48, 27);
 			
+//			color changed versions
+//			numbers= changeColor(numbers);
 			
 		}
 		catch (IOException e) {
@@ -101,6 +113,38 @@ public class Images {
 		} catch (IOException e) {
 			e.printStackTrace();
 			}
+	}
+	
+//	code for this function was derived from geeksforgeeks.org
+	public static BufferedImage changeColor(BufferedImage image, int color) {
+		for (int i = 0; i < image.getHeight(); i++) {
+			for(int j = 0; j < image.getWidth(); j++) {
+				int p = image.getRGB(j,i);
+				int a = (p>>24)&0xff;
+				switch(color) {
+				case 0:
+					int r = (p>>16)&0xff;
+					p = (a<<24) | (r<<16) | (0<<8) | 0;
+				case 1:
+					int g = (p>>8)&0xff;
+					p = (a<<24) | (0<<16) | (g<<8) | 0;
+				case 2:
+					int b = p&0xff;
+					p = (a<<24) | (0<<16) | (0<<8) | b;
+				}
+
+                image.setRGB(j, i, p);
+			}
+		}
+		return image;
+		
+	}
+	
+	public static BufferedImage[] changeColor(BufferedImage[] images, int color) {
+		for (int i = 0; i < images.length; i++) {
+			images[i] = changeColor(images[i], color);
+		}
+		return images;		
 	}
 	
 }

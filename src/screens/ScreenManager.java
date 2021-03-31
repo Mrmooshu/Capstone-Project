@@ -18,10 +18,6 @@ public class ScreenManager {
 		page.addButtons(game);
 	}
 	
-	public void tick() {
-		page.tick();
-	}
-	
 	public void draw(Graphics g) {
 		page.draw(g);
 	}

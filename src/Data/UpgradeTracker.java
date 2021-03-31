@@ -73,7 +73,6 @@ public class UpgradeTracker {
 		public String getName() {
 			return name;
 		}
-//		overide this
 		public double getTotal() {
 			double baseTotal = base;
 			double additive = 1;
@@ -95,10 +94,13 @@ public class UpgradeTracker {
 			}
 			return baseTotal*additive*multiplicative+flat;
 		}
+		public String getTotalText() {
+			return (double)Math.round(getTotal()*100)/100+"";
+		}
 	}
 	
 //	stats
-	public Stat miningPower,miningCritChance,miningCritMod,gemChance;
+	public Stat miningPower,miningCritChance,miningCritMod,gemChance,miningSpeed;
 	public Stat woodcuttingPower,quickChopChance,powerChopChance;
 	public Stat fishingPower,frenzyChance,frenzyDuration;
 
@@ -153,6 +155,7 @@ public class UpgradeTracker {
 		};
 
 //		stats
+		miningSpeed = new Stat("Mining Speed", 0, new Upgrade[0]);
 		miningPower = new Stat("Mining Power", 1, miningPowerUpgrades);
 		miningCritChance = new Stat("Mining Crit %", .05, miningCritChanceUpgrades);
 		miningCritMod = new Stat("Mining Crit Power", 1.5, miningCritModUpgrades);

@@ -24,6 +24,7 @@ public class PlayerData {
 
 
 	public void resetData() {
+		miningExp = woodcuttingExp = fishingExp = 0.0;
 		game.inventory=new Items();
 		game.UT=new UpgradeTracker();
 		saveData();
@@ -82,7 +83,7 @@ public class PlayerData {
 		}
 	}
 	
-	public void addExp(Screen.page_ID skill, int exp) {
+	public void addExp(Screen.page_ID skill, double exp) {
 		if (skill == Screen.page_ID.MINING) {
 			miningExp += exp;
 		}
@@ -91,6 +92,21 @@ public class PlayerData {
 		}
 		else if (skill == Screen.page_ID.FISHING) {
 			fishingExp += exp;
+		}
+	}
+	
+	public double getExp(Screen.page_ID skill) {
+		if (skill == Screen.page_ID.MINING) {
+			return miningExp;
+		}
+		else if (skill == Screen.page_ID.WOODCUTTING) {
+			return woodcuttingExp;
+		}
+		else if (skill == Screen.page_ID.FISHING) {
+			return fishingExp;
+		}
+		else {
+			return 0;
 		}
 	}
 	

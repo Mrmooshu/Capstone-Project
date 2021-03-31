@@ -34,7 +34,13 @@ public class Animation {
 	
 	public void drawOneCycle(Graphics g, int x, int y, int width, int height) {
 		if (frameCounter < frameArray.length-1) {
-			frameCounter++;
+			if(holdCounter == frameHold) {
+				holdCounter = 0;
+				frameCounter++;
+			}
+			else {
+				holdCounter++;
+			}
 		}	
 		g.drawImage(frameArray[frameCounter], x, y, width, height, null);
 	}

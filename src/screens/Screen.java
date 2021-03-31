@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.util.LinkedList;
 
 import javax.swing.JButton;
 
@@ -13,6 +14,7 @@ import Data.UpgradeTracker.Upgrade;
 import main.Game;
 import resources.Animation;
 import resources.Images;
+import resources.ItemGraphic;
 
 public class Screen {
 	
@@ -26,10 +28,14 @@ public class Screen {
 	}
 	private int BUTTON_WIDTH=192,BUTTON_HEIGHT=60,BUTTON_OFFSET=BUTTON_WIDTH+6;
 	
-	private final String LETTERS = "abcdefghijklmnopqrstuvwxyz.!? +-%:/", NUMBERS = "0123456789";
+	private final static String LETTERS = "abcdefghijklmnopqrstuvwxyz.!? +-%:/";
+
+	private final static String NUMBERS = "0123456789";
 	
 	private Game game;
 		
+	protected LinkedList<ItemGraphic> onScreenItems;
+	
 	public BufferedImage background;
 	public JButton zones,skills,items,tasks,settings;
 	public JButton[] headerButtons;
@@ -37,6 +43,7 @@ public class Screen {
 	public Screen(BufferedImage background, Game game) {
 		this.background = background;
 		this.game=game;
+		onScreenItems = new LinkedList<ItemGraphic>();
 		zones = new JButton();
 		skills = new JButton();
 		items = new JButton();
@@ -58,10 +65,10 @@ public class Screen {
 		}
 	}
 	
-	public BufferedImage numToImage(int n) {
+	protected static BufferedImage numToImage(int n) {
 		return Images.numbers[n];
 	}
-	public BufferedImage letterToImage(char c) {
+	protected static BufferedImage letterToImage(char c) {
 		if (c == '.') {
 			return Images.letters[26];
 		}
@@ -86,7 +93,7 @@ public class Screen {
 		return Images.letters[(int)Character.toUpperCase(c)-65];
 	}
 	
-	public void displayText(String text, Graphics g, int x, int y) {
+	public static void displayText(String text, Graphics g, int x, int y) {
 		for (int i = 0; i < text.length(); i++) {
 			if (LETTERS.indexOf(text.toLowerCase().charAt(i))!=-1){
 				displayLetter(text.charAt(i), g, x+i*3, y);
@@ -97,13 +104,14 @@ public class Screen {
 		}
 	}
 	
+	
 	protected void displayIcon(Item item, Graphics g, int x, int y) {
 		g.drawImage(item.Icon(),x*Game.SCREENSCALE,y*Game.SCREENSCALE,item.Icon().getWidth()*Game.ITEMICONSCALE,item.Icon().getHeight()*Game.ITEMICONSCALE,null);
 	}
-	protected void displayNum(int n, Graphics g, int x, int y) {
+	protected static void displayNum(int n, Graphics g, int x, int y) {
 		g.drawImage(numToImage(n),x*Game.SCREENSCALE,y*Game.SCREENSCALE,numToImage(n).getWidth(),numToImage(n).getHeight(),null);
 	}
-	protected void displayLetter(char c, Graphics g, int x, int y) {
+	protected static void displayLetter(char c, Graphics g, int x, int y) {
 		g.drawImage(letterToImage(c),x*Game.SCREENSCALE,y*Game.SCREENSCALE,letterToImage(c).getWidth(),letterToImage(c).getHeight(),null);
 	}
 	
@@ -122,6 +130,10 @@ public class Screen {
 		}
 	}
 	
+	public int getPercent(double val) {
+		return (int)(100 * val);
+	}
+	
 	protected void attemptUpgrade(Upgrade upgrade) {
 		if (upgrade.getCurrentLevel()==upgrade.getLevelMax()) {
 			System.out.print("max level");
@@ -129,6 +141,7 @@ public class Screen {
 		else if (upgrade.getCost()[1] <= game.inventory.itemList[upgrade.getCost()[0]].Quanity()) {
 			game.inventory.itemList[upgrade.getCost()[0]].Decrease(upgrade.getCost()[1]);
 			upgrade.setCurrentLevel(upgrade.getCurrentLevel()+1);
+			game.PD.saveData();
 		}
 		else {
 			System.out.print("cant afford");
@@ -138,6 +151,15 @@ public class Screen {
 	public void draw(Graphics g) {
 		g.drawImage(background,0,0,background.getWidth()*Game.SCREENSCALE,background.getHeight()*Game.SCREENSCALE,null);
 		g.drawImage(Images.headerUI,0,0,Images.headerUI.getWidth()*Game.SCREENSCALE,Images.headerUI.getHeight()*Game.SCREENSCALE,null);
+		for (int i = 0; i < onScreenItems.size(); i++) {
+			if (onScreenItems.get(i).getLifespan() <= 0) {
+				onScreenItems.remove(i);
+				i--;
+			}
+			else {
+				onScreenItems.get(i).draw(g);
+			}
+		}
 	}
 	
 	private void defineButtons() {
