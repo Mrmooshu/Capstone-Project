@@ -1,5 +1,6 @@
 package screens;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -130,8 +131,20 @@ public class Screen {
 		}
 	}
 	
+	protected void displayExpBar(Graphics g,int x,int y,long expEnd,page_ID skill) {
+		float a = (float)game.PD.getExp(skill);
+		float b = a/(float)expEnd;
+		int c = (int) (b*99);
+		g.setColor(Images.CYAN);
+		g.fillRect(x, y, c, 3*Game.SCREENSCALE);
+	}
+	
 	public int getPercent(double val) {
 		return (int)(100 * val);
+	}
+	
+	public double getSeconds(double val) {
+		return (double)Math.round((val/60)*100)/100;
 	}
 	
 	protected void attemptUpgrade(Upgrade upgrade) {
@@ -148,9 +161,7 @@ public class Screen {
 		}
 	}
 	
-	public void draw(Graphics g) {
-		g.drawImage(background,0,0,background.getWidth()*Game.SCREENSCALE,background.getHeight()*Game.SCREENSCALE,null);
-		g.drawImage(Images.headerUI,0,0,Images.headerUI.getWidth()*Game.SCREENSCALE,Images.headerUI.getHeight()*Game.SCREENSCALE,null);
+	protected void drawOnScreenItems(Graphics g) {
 		for (int i = 0; i < onScreenItems.size(); i++) {
 			if (onScreenItems.get(i).getLifespan() <= 0) {
 				onScreenItems.remove(i);
@@ -160,6 +171,14 @@ public class Screen {
 				onScreenItems.get(i).draw(g);
 			}
 		}
+	}
+	
+
+	
+	public void draw(Graphics g) {
+		g.drawImage(background,0,0,background.getWidth()*Game.SCREENSCALE,background.getHeight()*Game.SCREENSCALE,null);
+		g.drawImage(Images.headerUI,0,0,Images.headerUI.getWidth()*Game.SCREENSCALE,Images.headerUI.getHeight()*Game.SCREENSCALE,null);
+
 	}
 	
 	private void defineButtons() {

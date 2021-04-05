@@ -8,23 +8,24 @@ import java.io.FileWriter;
 
 import main.Game;
 import screens.Screen;
+import screens.Screen.page_ID;
 
 public class PlayerData {
 
 	String saveFile = "src/Data/Save/savefile.txt";
 	Game game;
-	private double miningExp,woodcuttingExp,fishingExp;
+	private long miningExp,woodcuttingExp,fishingExp;
 	private int miningLvl,woodcuttingLvl,fishingLvl;
 	
 	public PlayerData(Game game) {
 		this.game = game;
-		miningExp = woodcuttingExp = fishingExp = 0.0;
+		miningExp = woodcuttingExp = fishingExp = 0;
 		loadData();
 	}
 
 
 	public void resetData() {
-		miningExp = woodcuttingExp = fishingExp = 0.0;
+		miningExp = woodcuttingExp = fishingExp = 0;
 		game.inventory=new Items();
 		game.UT=new UpgradeTracker();
 		saveData();
@@ -36,9 +37,9 @@ public class PlayerData {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(saveFile));
 //			exp
-			miningExp = Double.parseDouble(br.readLine());
-			woodcuttingExp = Double.parseDouble(br.readLine());
-			fishingExp = Double.parseDouble(br.readLine());
+			miningExp = Long.parseLong(br.readLine());
+			woodcuttingExp = Long.parseLong(br.readLine());
+			fishingExp = Long.parseLong(br.readLine());
 //			items
 			for (int i = 0; i < game.inventory.itemList.length; i++) {
 				game.inventory.itemList[i].Increase(Long.parseLong(br.readLine()));
@@ -95,7 +96,7 @@ public class PlayerData {
 		}
 	}
 	
-	public double getExp(Screen.page_ID skill) {
+	public long getExp(Screen.page_ID skill) {
 		if (skill == Screen.page_ID.MINING) {
 			return miningExp;
 		}
@@ -107,6 +108,24 @@ public class PlayerData {
 		}
 		else {
 			return 0;
+		}
+	}
+	
+	public void incrementLevel(Screen.page_ID skill) {
+		if (skill == Screen.page_ID.MINING) {
+			miningExp = miningExp-getNextLevelReq(page_ID.MINING);
+			miningLvl++;
+		}
+		else if (skill == Screen.page_ID.WOODCUTTING) {
+			woodcuttingExp = woodcuttingExp-getNextLevelReq(page_ID.WOODCUTTING);
+
+			woodcuttingLvl++;
+
+		}
+		else if (skill == Screen.page_ID.FISHING) {
+			fishingExp = fishingExp-getNextLevelReq(page_ID.FISHING);
+			fishingLvl++;
+
 		}
 	}
 	
@@ -125,7 +144,16 @@ public class PlayerData {
 		}
 	}
 	
-	
+	public long getNextLevelReq(Screen.page_ID skill) {
+		long level = getLevel(skill);
+		long result = 100;
+		while (level!=0) {
+			result += Math.ceil(result*0.1);
+			level--;
+		}
+		return result;
+	}
+
 	
 	
 	

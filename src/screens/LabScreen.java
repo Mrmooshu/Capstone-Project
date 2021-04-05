@@ -143,9 +143,9 @@ public class LabScreen extends Screen{
 			displayText("MAX",g,12,112);
 		}
 		else {
-			displayText(game.inventory.itemList[findSelected().getCost()[0]].Quanity()+"/"+findSelected().getCost()[1],g,38,112);
-			displayIcon(game.inventory.itemList[findSelected().getCost()[0]],g,27,108);
-			displayText("cost:",g,12,112);
+			displayText(game.inventory.itemList[findSelected().getCost()[0]].Quanity()+"/"+findSelected().getCost()[1],g,38,111);
+			displayIcon(game.inventory.itemList[findSelected().getCost()[0]],g,27,107);
+			displayText("cost:",g,12,111);
 		}
 		if (findSelected().getCurrentLevel() == 0) {
 			g.drawImage(Images.LabUIicons[2],79*Game.SCREENSCALE,126*Game.SCREENSCALE,32,32,null);
