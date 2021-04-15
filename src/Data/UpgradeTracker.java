@@ -1,5 +1,9 @@
 package Data;
- 
+
+import java.math.BigInteger;
+
+import main.Game;
+import screens.Screen.page_ID;
 
 public class UpgradeTracker {
 	
@@ -14,13 +18,20 @@ public class UpgradeTracker {
 		private bonus_type bonusType;
 		private double bonusPerLevel;
 		private int[] itemCostperLevelID;
-		private int[] itemCostperLevelQuantity;
-		public Upgrade(String text, int[] itemCostperLevelID, int[] itemCostperLevelQuantity, double bonusPerLevel, bonus_type bonusType) {
+		private BigInteger[] itemCostperLevelQuantity;
+		public Upgrade(String text, int[] itemCostperLevelID, BigInteger[] itemCostperLevelQuantity, double bonusPerLevel, bonus_type bonusType) {
 			this.text=text;
 			this.itemCostperLevelID = itemCostperLevelID;
 			this.itemCostperLevelQuantity = itemCostperLevelQuantity;
 			this.levelCurrent = 0;
 			this.levelMax = itemCostperLevelID.length;
+			this.bonusPerLevel=bonusPerLevel;
+			this.bonusType=bonusType;
+		}
+		public Upgrade(String text, double bonusPerLevel, bonus_type bonusType, int levelMax) {
+			this.text=text;
+			this.levelCurrent = 0;
+			this.levelMax = levelMax;
 			this.bonusPerLevel=bonusPerLevel;
 			this.bonusType=bonusType;
 		}
@@ -31,8 +42,11 @@ public class UpgradeTracker {
 		public double getBonus() {
 			return bonusPerLevel*levelCurrent;
 		}		
-		public int[] getCost() {
-			return new int[] {itemCostperLevelID[levelCurrent],itemCostperLevelQuantity[levelCurrent]};
+		public int getCostID() {
+			return itemCostperLevelID[levelCurrent];
+		}
+		public BigInteger getCostQuanity() {
+			return itemCostperLevelQuantity[levelCurrent];
 		}
 		public int getCurrentLevel() {
 			return levelCurrent;
@@ -102,10 +116,17 @@ public class UpgradeTracker {
 //	stats
 	public Stat miningPower,miningCritChance,miningCritMod,gemChance,miningSpeed;
 	public Stat woodcuttingPower,quickChopChance,powerChopChance,woodcuttingSpeed;
-	public Stat fishingPower,frenzyChance,frenzyDuration,fishingSpeed;
+	public Stat fishingPower,frenzyPower,frenzyDuration,fishingSpeed;
 
 //  upgrades
 	public Upgrade[][] upgradeList;
+	
+	
+	public Upgrade miningPowerBase,woodcuttingPowerBase,fishingPowerBase;
+	
+	public Upgrade[] miningPowerUpgrades,miningSpeedUpgrades,miningCritChanceUpgrades,miningCritModUpgrades;
+	public Upgrade[] woodcuttingPowerUpgrades,woodcuttingSpeedUpgrades,quickChopChanceUpgrades,powerChopChanceUpgrades;
+	public Upgrade[] fishingPowerUpgrades,fishingSpeedUpgrades,frenzyPowerUpgrades,frenzyDurationUpgrades;
 	
 	public Upgrade labMining0,labMining1,labMining2;
 	public Upgrade labWoodcutting0,labWoodcutting1,labWoodcutting2;
@@ -115,84 +136,92 @@ public class UpgradeTracker {
 	
 	public Upgrade woodcuttingPage0,woodcuttingPage1,woodcuttingPage2,woodcuttingPage3;
 
+	private Game game;
 	
-	
-	public UpgradeTracker() {
+	public UpgradeTracker(Game game) {
+		this.game = game;
 //		mining
-		Upgrade[] miningPowerUpgrades = new Upgrade[] {
-				labMining0 = new Upgrade("miningpower",new int[] {10,10,10},new int[] {50,250,1250},.05,bonus_type.ADDITIVE),
-				miningPage0 = new Upgrade("miningpower",new int[] {10,10,10},new int[] {50,250,1250},.05,bonus_type.ADDITIVE)
+		miningPowerUpgrades = new Upgrade[] {
+				miningPowerBase = new Upgrade("miningpower",1,bonus_type.BASE, PlayerData.MINIGMAX),
+				labMining0 = new Upgrade("miningpower",new int[] {10,10,10},new BigInteger[] {new BigInteger("50"),new BigInteger("250"),new BigInteger("1250")},.05,bonus_type.ADDITIVE),
+				miningPage0 = new Upgrade("miningpower",new int[] {10,10,10},new BigInteger[] {new BigInteger("50"),new BigInteger("250"),new BigInteger("1250")},.05,bonus_type.ADDITIVE)
 		};
 
-		Upgrade[] miningSpeedUpgrades = new Upgrade[] {
-				miningPage1 = new Upgrade("miningspeed",new int[] {10,10,10},new int[] {50,250,1250},.05,bonus_type.ADDITIVE)
+		miningSpeedUpgrades = new Upgrade[] {
+				miningPage1 = new Upgrade("miningspeed",new int[] {10,10,10},new BigInteger[] {new BigInteger("50"),new BigInteger("250"),new BigInteger("1250")},1,bonus_type.BASE)
 		};
 		
-		Upgrade[] miningCritChanceUpgrades = new Upgrade[] {
-				labMining1 = new Upgrade("miningCrit%",new int[] {11,11,11},new int[] {40,200,1000},.01,bonus_type.BASE),
-				miningPage2 = new Upgrade("miningCrit%",new int[] {11,11,11},new int[] {40,200,1000},.01,bonus_type.BASE)
+		miningCritChanceUpgrades = new Upgrade[] {
+				labMining1 = new Upgrade("miningCrit%",new int[] {11,11,11},new BigInteger[] {new BigInteger("50"),new BigInteger("250"),new BigInteger("1250")},.01,bonus_type.BASE),
+				miningPage2 = new Upgrade("miningCrit%",new int[] {11,11,11},new BigInteger[] {new BigInteger("50"),new BigInteger("250"),new BigInteger("1250")},.01,bonus_type.BASE)
 		};
 
-		Upgrade[] miningCritModUpgrades = new Upgrade[] {
-				labMining2 = new Upgrade("miningCritMod",new int[] {12,12,12},new int[] {30,150,750},.05,bonus_type.BASE),
-				miningPage3 = new Upgrade("miningCritMod",new int[] {12,12,12},new int[] {30,150,750},.05,bonus_type.BASE)
+		miningCritModUpgrades = new Upgrade[] {
+				labMining2 = new Upgrade("miningCritMod",new int[] {12,12,12},new BigInteger[] {new BigInteger("50"),new BigInteger("250"),new BigInteger("1250")},.05,bonus_type.BASE),
+				miningPage3 = new Upgrade("miningCritMod",new int[] {12,12,12},new BigInteger[] {new BigInteger("50"),new BigInteger("250"),new BigInteger("1250")},.05,bonus_type.BASE)
 		};
 		
 //		woodcutting
-		Upgrade[] woodcuttingPowerUpgrades = new Upgrade[] {
-				labWoodcutting0 = new Upgrade("woodcuttingpower",new int[] {20,20,20},new int[] {50,250,1250},.05,bonus_type.ADDITIVE),
-				woodcuttingPage0 = new Upgrade("woodcuttingpower",new int[] {20,20,20},new int[] {50,250,1250},.05,bonus_type.ADDITIVE)
+		woodcuttingPowerUpgrades = new Upgrade[] {
+				woodcuttingPowerBase = new Upgrade("woodcuttingpower",1,bonus_type.BASE,PlayerData.WOODCUTTINGMAX),
+				labWoodcutting0 = new Upgrade("woodcuttingpower",new int[] {20,20,20},new BigInteger[] {new BigInteger("50"),new BigInteger("250"),new BigInteger("1250")},.05,bonus_type.ADDITIVE),
+				woodcuttingPage0 = new Upgrade("woodcuttingpower",new int[] {20,20,20},new BigInteger[] {new BigInteger("50"),new BigInteger("250"),new BigInteger("1250")},.05,bonus_type.BASE)
 		};
-		Upgrade[] woodcuttingSpeedUpgrades = new Upgrade[] {
-				woodcuttingPage1 = new Upgrade("woodcuttingspeed",new int[] {20,20,20},new int[] {50,250,1250},.05,bonus_type.ADDITIVE)
+		woodcuttingSpeedUpgrades = new Upgrade[] {
+				woodcuttingPage1 = new Upgrade("woodcuttingspeed",new int[] {20,20,20},new BigInteger[] {new BigInteger("50"),new BigInteger("250"),new BigInteger("1250")},1,bonus_type.BASE)
 		};
-		Upgrade[] quickChopChanceUpgrades = new Upgrade[] {
-				labWoodcutting1 = new Upgrade("quickChopChance",new int[] {21,21,21},new int[] {40,200,1000},.05,bonus_type.ADDITIVE),
-				woodcuttingPage2 = new Upgrade("quickChopChance",new int[] {20,20,20},new int[] {50,250,1250},.05,bonus_type.ADDITIVE)
+		quickChopChanceUpgrades = new Upgrade[] {
+				labWoodcutting1 = new Upgrade("quickChopChance",new int[] {21,21,21},new BigInteger[] {new BigInteger("50"),new BigInteger("250"),new BigInteger("1250")},.05,bonus_type.BASE),
+				woodcuttingPage2 = new Upgrade("quickChopChance",new int[] {21,21,21},new BigInteger[] {new BigInteger("50"),new BigInteger("250"),new BigInteger("1250")},.05,bonus_type.BASE)
 
 		};
-		Upgrade[] powerChopChanceUpgrades = new Upgrade[] {
-				labWoodcutting2 = new Upgrade("powerChopChance",new int[] {22,22,22},new int[] {30,150,750},.05,bonus_type.ADDITIVE),
-				woodcuttingPage3 = new Upgrade("powerChopChance",new int[] {20,20,20},new int[] {50,250,1250},.05,bonus_type.ADDITIVE)
+		powerChopChanceUpgrades = new Upgrade[] {
+				labWoodcutting2 = new Upgrade("powerChopChance",new int[] {22,22,22},new BigInteger[] {new BigInteger("50"),new BigInteger("250"),new BigInteger("1250")},.05,bonus_type.BASE),
+				woodcuttingPage3 = new Upgrade("powerChopChance",new int[] {22,22,22},new BigInteger[] {new BigInteger("50"),new BigInteger("250"),new BigInteger("1250")},.05,bonus_type.BASE)
 
 		};
 		
 //		fishing
-		Upgrade[] fishingPowerUpgrades = new Upgrade[] {
-				labFishing0 = new Upgrade("fishingpower",new int[] {30,30,30},new int[] {50,250,1250},.05,bonus_type.ADDITIVE)
+		fishingPowerUpgrades = new Upgrade[] {
+				fishingPowerBase = new Upgrade("fishingPower",1,bonus_type.BASE,PlayerData.FISHINGMAX),
+				labFishing0 = new Upgrade("fishingpower",new int[] {30,30,30},new BigInteger[] {new BigInteger("50"),new BigInteger("250"),new BigInteger("1250")},.05,bonus_type.ADDITIVE)
 		};
-		Upgrade[] fishingSpeedUpgrades = new Upgrade[] {
+		fishingSpeedUpgrades = new Upgrade[] {
 		};
-		Upgrade[] FrenzyChanceUpgrades = new Upgrade[] {
-				labFishing1 = new Upgrade("frenzyChance",new int[] {31,31,31},new int[] {40,200,1000},.05,bonus_type.ADDITIVE)
+		frenzyPowerUpgrades = new Upgrade[] {
+				labFishing1 = new Upgrade("frenzyChance",new int[] {31,31,31},new BigInteger[] {new BigInteger("50"),new BigInteger("250"),new BigInteger("1250")},.05,bonus_type.ADDITIVE)
 		};
-		Upgrade[] FrenzyDurationUpgrades = new Upgrade[] {
-				labFishing2 = new Upgrade("frenzyDuration",new int[] {32,32,32},new int[] {30,150,750},.05,bonus_type.ADDITIVE)
+		frenzyDurationUpgrades = new Upgrade[] {
+				labFishing2 = new Upgrade("frenzyDuration",new int[] {32,32,32},new BigInteger[] {new BigInteger("50"),new BigInteger("250"),new BigInteger("1250")},.05,bonus_type.ADDITIVE)
 		};
 
-//		stats
-		miningPower = new Stat("Mining Power", 100, miningPowerUpgrades);
-		miningSpeed = new Stat("Mining Speed", 0, miningSpeedUpgrades);
-		miningCritChance = new Stat("Mining Crit %", .0, miningCritChanceUpgrades);
-		miningCritMod = new Stat("Mining Crit Power", 1.1, miningCritModUpgrades);
 
-		woodcuttingPower = new Stat("Woodcutting Power", 100, woodcuttingPowerUpgrades);
-		woodcuttingSpeed = new Stat("Woodcutting Speed", 0, woodcuttingSpeedUpgrades);
-		quickChopChance = new Stat("Quick Chop Chance", .0, quickChopChanceUpgrades);
-		powerChopChance = new Stat("Power Chop Chance", .0, powerChopChanceUpgrades);
-
-		
-		fishingPower = new Stat("Fishing Power", 1, fishingPowerUpgrades);
-		fishingSpeed = new Stat("Fishing Speed", 0, fishingSpeedUpgrades);
-		frenzyChance = new Stat("Frenzy Chance", 1, FrenzyChanceUpgrades);
-		frenzyDuration = new Stat("Frenzy Duration", 1, FrenzyDurationUpgrades);
 		
 		
 		upgradeList = new Upgrade[][] {
 			miningPowerUpgrades,miningSpeedUpgrades,miningCritChanceUpgrades,miningCritModUpgrades,
 			woodcuttingPowerUpgrades,woodcuttingSpeedUpgrades,quickChopChanceUpgrades,powerChopChanceUpgrades,
-			fishingPowerUpgrades,fishingSpeedUpgrades,FrenzyChanceUpgrades,FrenzyDurationUpgrades
+			fishingPowerUpgrades,fishingSpeedUpgrades,frenzyPowerUpgrades,frenzyDurationUpgrades
 			};
+	}
+	
+	public void initialize() {
+//		stats
+		miningPower = new Stat("Mining Power", game.PD.getLevel(page_ID.MINING), miningPowerUpgrades);
+		miningSpeed = new Stat("Mining Speed", 0, miningSpeedUpgrades);
+		miningCritChance = new Stat("Mining Crit %", .0, miningCritChanceUpgrades);
+		miningCritMod = new Stat("Mining Crit Power", 1.1, miningCritModUpgrades);
+
+		woodcuttingPower = new Stat("Woodcutting Power", game.PD.getLevel(page_ID.WOODCUTTING), woodcuttingPowerUpgrades);
+		woodcuttingSpeed = new Stat("Woodcutting Speed", 0, woodcuttingSpeedUpgrades);
+		quickChopChance = new Stat("Quick Chop Chance", 0, quickChopChanceUpgrades);
+		powerChopChance = new Stat("Power Chop Chance", 0, powerChopChanceUpgrades);
+
+		
+		fishingPower = new Stat("Fishing Power", game.PD.getLevel(page_ID.FISHING), fishingPowerUpgrades);
+		fishingSpeed = new Stat("Fishing Speed", 0, fishingSpeedUpgrades);
+		frenzyPower = new Stat("Frenzy Power", 5, frenzyPowerUpgrades);
+		frenzyDuration = new Stat("Frenzy Duration", 300, frenzyDurationUpgrades);
 	}
 	
 	

@@ -2,6 +2,8 @@ package resources;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -24,16 +26,23 @@ public class Images {
 	public static Color DARKGREEN = new Color(0,150,0);
 	public static Color DARKBLUE = new Color(0,0,150);
 
+	public static Color THOUSANDCOLOR = new Color(100,100,255);
+	public static Color MILLIONCOLOR = new Color(100,255,100);
+	public static Color BILLIONCOLOR = new Color(100,255,180);
+	public static Color TRILLIONCOLOR = new Color(255,255,100);
+	public static Color QUADRILLIONCOLOR = new Color(255,100,100);
+	public static Color QUINTILLIONCOLOR = new Color(255,100,180);
+	public static Color SEXTILLIONCOLOR = new Color(0,200,100);
+
 
 	//images
 	public static BufferedImage[] backgrounds,skillicons,staticons,items,numbers,letters;
 	public static BufferedImage[] LabUIicons,LabUI;
 	public static BufferedImage[] miningcharacter,miningUIicons,miningUI,miningRocks;	
-	public static BufferedImage[] woodcuttingcharacter,woodcuttingUIicons,woodcuttingUI,woodcuttingTrees;
+	public static BufferedImage[] woodcuttingcharacter,woodcuttingUIicons,woodcuttingUI,woodcuttingTrees,quickchopstacks;
 	public static BufferedImage[] fishingcharacter,fishingUIicons,fishingUI;
-	public static BufferedImage[] numbersred;
 	//animation frames
-	public static BufferedImage[] generator, handle, mininganimation, choppinganimation;
+	public static BufferedImage[] generator, handle, mininganimation, choppinganimation, fishinganimation;
 	//image
 	public static BufferedImage headerUI;
 	
@@ -54,18 +63,21 @@ public class Images {
 		woodcuttingUI = new BufferedImage[2];
 		woodcuttingUIicons = new BufferedImage[4];
 		woodcuttingTrees = new BufferedImage[6];
+		quickchopstacks = new BufferedImage[5];
 		
 		fishingcharacter = new BufferedImage[3];
+		fishingUI = new BufferedImage[2];
+		fishingUIicons = new BufferedImage[4];
 		
 		items = new BufferedImage[200];
 		numbers = new BufferedImage[10];
-		numbersred = new BufferedImage[10];
 		letters = new BufferedImage[35];
 
 		generator = new BufferedImage[12];
 		handle = new BufferedImage[16];
 		mininganimation = new BufferedImage[9];
 		choppinganimation = new BufferedImage[9];
+		fishinganimation = new BufferedImage[16];
 		
 		try {
 			backgrounds[Screen.page_ID.LAB.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/lab_background.png"));
@@ -89,6 +101,10 @@ public class Images {
 			readSpriteSheet("/resources/UI/woodcutting_UI_icons.png",woodcuttingUIicons,16,16);
 			woodcuttingUI[0] = ImageIO.read(getClass().getResourceAsStream("/resources/UI/woodcutting_upgrade_interface.png"));
 			woodcuttingUI[1] = ImageIO.read(getClass().getResourceAsStream("/resources/UI/woodcutting_stat_interface.png"));
+			
+			readSpriteSheet("/resources/UI/fishing_UI_icons.png",fishingUIicons,16,16);
+			fishingUI[0] = ImageIO.read(getClass().getResourceAsStream("/resources/UI/fishing_upgrade_interface.png"));
+			fishingUI[1] = ImageIO.read(getClass().getResourceAsStream("/resources/UI/fishing_stat_interface.png"));
 
 			readSpriteSheet("/resources/UI/skill_icons.png", skillicons, 16, 16);
 			readSpriteSheet("/resources/UI/stat_icons.png", staticons, 16, 16);
@@ -99,6 +115,7 @@ public class Images {
 			
 			readSpriteSheet("/resources/Characters/sentinels.png",woodcuttingcharacter,80,80);
 			readSpriteSheet("/resources/Props/woodcutting_trees.png",woodcuttingTrees,64,64);
+			readSpriteSheet("/resources/UI/quickChopStacks.png",quickchopstacks,22,22);
 			
 			readSpriteSheet("/resources/Characters/robots.png",fishingcharacter,80,80);
 
@@ -114,9 +131,7 @@ public class Images {
 			readSpriteSheet("/resources/Animations/handle_animation.png", handle, 22, 20);
 			readSpriteSheet("/resources/Animations/miningAnimation.png", mininganimation, 48, 27);
 			readSpriteSheet("/resources/Animations/choppingAnimation.png", choppinganimation, 48, 31);
-			
-//			color changed versions
-//			numbers= changeColor(numbers,LIME);
+			readSpriteSheet("/resources/Animations/fishingAnimation.png", fishinganimation, 48, 32);
 			
 		}
 		catch (IOException e) {
@@ -136,7 +151,8 @@ public class Images {
 	}
 	
 //	this function uses and modifies some code from geeksforgeeks.org
-	public static BufferedImage changeColor(BufferedImage image, Color color) {
+	public static BufferedImage changeColor(BufferedImage original, Color color) {
+		BufferedImage image = deepCopyImage(original);
 		for (int i = 0; i < image.getHeight(); i++) {
 			for(int j = 0; j < image.getWidth(); j++) {
 				int p = image.getRGB(j,i);
@@ -151,12 +167,16 @@ public class Images {
 		return image;
 		
 	}
-	
 	public static BufferedImage[] changeColor(BufferedImage[] images, Color color) {
+		BufferedImage[] newImages = new BufferedImage[images.length];
 		for (int i = 0; i < images.length; i++) {
-			images[i] = changeColor(images[i], color);
+			newImages[i] = changeColor(images[i], color);
 		}
-		return images;		
+		return newImages;		
+	}
+//	this function was found here http://www.java2s.com/example/java-utility-method/bufferedimage-deep-copy/deepcopy-bufferedimage-image-a6a0b.html
+	public static BufferedImage deepCopyImage(BufferedImage image) {
+		return new BufferedImage(image.getColorModel(), (WritableRaster) image.copyData(image.getRaster().createCompatibleWritableRaster()),image.isAlphaPremultiplied(), null);
 	}
 	
 }

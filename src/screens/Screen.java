@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.math.BigInteger;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
@@ -69,6 +70,9 @@ public class Screen {
 	protected static BufferedImage numToImage(int n) {
 		return Images.numbers[n];
 	}
+	protected static BufferedImage numToImage(int n,Color color) {
+		return Images.changeColor(Images.numbers[n], color);
+	}
 	protected static BufferedImage letterToImage(char c) {
 		if (c == '.') {
 			return Images.letters[26];
@@ -93,7 +97,31 @@ public class Screen {
 		}
 		return Images.letters[(int)Character.toUpperCase(c)-65];
 	}
-	
+	protected static BufferedImage letterToImage(char c, Color color) {
+		BufferedImage[] coloredLetters = Images.changeColor(Images.letters, color);
+		if (c == '.') {
+			return coloredLetters[26];
+		}
+		else if (c == ' ') {
+			return coloredLetters[29];
+		}
+		else if (c == '+') {
+			return coloredLetters[30];
+		}
+		else if (c == '-') {
+			return coloredLetters[31];
+		}
+		else if (c == '%') {
+			return coloredLetters[32];
+		}
+		else if (c == ':') {
+			return coloredLetters[33];
+		}
+		else if (c == '/') {
+			return coloredLetters[34];
+		}
+		return coloredLetters[(int)Character.toUpperCase(c)-65];
+	}
 	public static void displayText(String text, Graphics g, int x, int y) {
 		for (int i = 0; i < text.length(); i++) {
 			if (LETTERS.indexOf(text.toLowerCase().charAt(i))!=-1){
@@ -104,7 +132,16 @@ public class Screen {
 			}
 		}
 	}
-	
+	public static void displayText(String text, Graphics g, int x, int y, Color color) {
+		for (int i = 0; i < text.length(); i++) {
+			if (LETTERS.indexOf(text.toLowerCase().charAt(i))!=-1){
+				displayLetter(text.charAt(i), g, x+i*3, y, color);
+			}
+			if (NUMBERS.indexOf(text.charAt(i))!=-1) {
+				displayNum(Character.getNumericValue(text.charAt(i)), g, x+i*3, y, color);
+			}
+		}
+	}
 	
 	protected void displayIcon(Item item, Graphics g, int x, int y) {
 		g.drawImage(item.Icon(),x*Game.SCREENSCALE,y*Game.SCREENSCALE,item.Icon().getWidth()*Game.ITEMICONSCALE,item.Icon().getHeight()*Game.ITEMICONSCALE,null);
@@ -112,23 +149,64 @@ public class Screen {
 	protected static void displayNum(int n, Graphics g, int x, int y) {
 		g.drawImage(numToImage(n),x*Game.SCREENSCALE,y*Game.SCREENSCALE,numToImage(n).getWidth(),numToImage(n).getHeight(),null);
 	}
+	protected static void displayNum(int n, Graphics g, int x, int y, Color color) {
+		g.drawImage(numToImage(n, color),x*Game.SCREENSCALE,y*Game.SCREENSCALE,numToImage(n).getWidth(),numToImage(n).getHeight(),null);
+	}
 	protected static void displayLetter(char c, Graphics g, int x, int y) {
 		g.drawImage(letterToImage(c),x*Game.SCREENSCALE,y*Game.SCREENSCALE,letterToImage(c).getWidth(),letterToImage(c).getHeight(),null);
+	}
+	protected static void displayLetter(char c, Graphics g, int x, int y, Color color) {
+		g.drawImage(letterToImage(c, color),x*Game.SCREENSCALE,y*Game.SCREENSCALE,letterToImage(c).getWidth(),letterToImage(c).getHeight(),null);
 	}
 	
 	protected void displayItems(Item[] items, Graphics g, int x, int y) {
 		for (int i = 0; i < items.length; i++) {
 			displayIcon(items[i], g, x, y+(i*10));
-			if (items[i].Quanity() == 0) {
-				displayNum(0, g, x+11, y+4+(i*10));
+			if (items[i].Quanity().toString() == "0") {
+				displayBigNumbers(new BigInteger(""+0), g, x+11, y+4+(i*10));
 			}
 			else {
-				String num = String.valueOf(items[i].Quanity());
-				for (int j = 0; j < num.length(); j++) {
-					displayNum(Integer.parseInt(num.substring(j,j+1)), g, x+11+(j*3), y+4+(i*10));
-				}
+				BigInteger num = items[i].Quanity();
+				displayBigNumbers(num, g, x+11, y+4+(i*10));
 			}
 		}
+	}
+	
+	public static void displayBigNumbers(BigInteger number, Graphics g, int x, int y) {
+		if (number.compareTo(new BigInteger("1000")) == -1) {
+			displayText(number.toString(),g,x,y);
+		}
+		else if (number.compareTo(new BigInteger("1000000")) == -1) {
+			displayText(number.toString().substring(0, number.toString().length()-3)+"K",g,x,y,Images.THOUSANDCOLOR);
+		}
+		else if (number.compareTo(new BigInteger("1000000000")) == -1) {
+			displayText(number.toString().substring(0, number.toString().length()-6)+"M",g,x,y,Images.MILLIONCOLOR);
+		}
+		else if (number.compareTo(new BigInteger("1000000000000")) == -1) {
+			displayText(number.toString().substring(0, number.toString().length()-9)+"B",g,x,y,Images.BILLIONCOLOR);
+		}
+		else if (number.compareTo(new BigInteger("1000000000000000")) == -1) {
+			displayText(number.toString().substring(0, number.toString().length()-12)+"t",g,x,y,Images.TRILLIONCOLOR);
+		}
+		else if (number.compareTo(new BigInteger("1000000000000000000")) == -1) {
+			displayText(number.toString().substring(0, number.toString().length()-15)+"q",g,x,y,Images.QUADRILLIONCOLOR);
+		}
+		else if (number.compareTo(new BigInteger("1000000000000000000000")) == -1) {
+			displayText(number.toString().substring(0, number.toString().length()-18)+"Q",g,x,y,Images.QUINTILLIONCOLOR);
+		}
+		else if (number.compareTo(new BigInteger("1000000000000000000000000")) == -1) {
+			displayText(number.toString().substring(0, number.toString().length()-21)+"s",g,x,y,Images.SEXTILLIONCOLOR);
+		}
+		else {
+			displayText("bruh moment",g,x,y,Images.RED);
+		}
+	}
+	
+	protected void displayCost(BigInteger quanity, BigInteger cost, Graphics g, int x, int y) {
+		displayBigNumbers(quanity,g,x+15,y);
+		displayBigNumbers(cost,g,x+33,y);
+		displayText("/",g,x+28,y);
+		displayText("cost:",g,x,y);
 	}
 	
 	protected void displayExpBar(Graphics g,int x,int y,long expEnd,page_ID skill) {
@@ -151,8 +229,8 @@ public class Screen {
 		if (upgrade.getCurrentLevel()==upgrade.getLevelMax()) {
 			System.out.print("max level");
 		}
-		else if (upgrade.getCost()[1] <= game.inventory.itemList[upgrade.getCost()[0]].Quanity()) {
-			game.inventory.itemList[upgrade.getCost()[0]].Decrease(upgrade.getCost()[1]);
+		else if (new BigInteger(""+upgrade.getCostQuanity()).compareTo(game.inventory.itemList[upgrade.getCostID()].Quanity()) == 0 || new BigInteger(""+upgrade.getCostQuanity()).compareTo(game.inventory.itemList[upgrade.getCostID()].Quanity()) == -1) {
+			game.inventory.itemList[upgrade.getCostID()].Decrease(upgrade.getCostQuanity());
 			upgrade.setCurrentLevel(upgrade.getCurrentLevel()+1);
 			game.PD.saveData();
 		}

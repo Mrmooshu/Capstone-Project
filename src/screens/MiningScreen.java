@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Random;
@@ -23,25 +24,27 @@ public class MiningScreen extends Screen{
 	public enum stat_tab {
 		POWER,SPEED,CRITCHANCE,CRITMOD,STATS;
 	}
-	public enum ore {
-		COPPER(11,100,1),IRON(12,200,3),SILVER(13,600,12),TUNGSTON(14,2400,60),GOLD(15,12000,360),COBALT(16,72000,2520);
+	public enum Ore {
+		COPPER(11,100,5,1),IRON(12,200,15,11),SILVER(13,600,60,21),TUNGSTON(14,2400,300,31),GOLD(15,12000,1800,41),COBALT(16,72000,12600,51);
 		private final int ID;
 		private final int durability;
 		private final double exp;
+		private final int unlockLevel;
 		
-		private ore(int ID,int durability,double exp) {
+		private Ore(int ID,int durability,double exp,int unlockLevel) {
 			this.ID = ID;
 			this.durability = durability;
 			this.exp = exp;
+			this.unlockLevel = unlockLevel;
 		}
 		
-		public ore getNext() {
+		public Ore getNext() {
 			if (this == COBALT) {
 				return this;
 			}
 			return values()[ordinal()+1%values().length];
 		}
-		public ore getPrev() {
+		public Ore getPrev() {
 			if (this == COPPER) {
 				return this;
 			}
@@ -57,7 +60,7 @@ public class MiningScreen extends Screen{
 	private long expfornextlevel;
 	
 	private stat_tab statTab;
-	private ore selectedOre;
+	private Ore selectedOre;
 	
 	
 	private Game game;
@@ -73,7 +76,7 @@ public class MiningScreen extends Screen{
 		defineButtons();
 		miningButtons = new LinkedList<JButton>();
 		statTab = stat_tab.POWER;
-		selectedOre=ore.COPPER;
+		selectedOre=Ore.COPPER;
 		miningButtons.add(oreLeft);
 		miningButtons.add(oreRight);
 		miningButtons.add(statPage);
@@ -124,12 +127,12 @@ public class MiningScreen extends Screen{
 		int oreGained = 0;
 		double a = selectedOre.durability;
 		double b = game.UT.miningPower.getTotal();
-		double c = game.UT.miningCritChance.getTotal();
+		double c = game.UT.miningCritChance.getTotal()*100;
 		while (c >= 100) {
 			b = b*game.UT.miningCritMod.getTotal();
 			c = c-100;
 		}
-		if (rand.nextInt(100) <= c) {
+		if (rand.nextInt(101) <= c) {
 			b = b*game.UT.miningCritMod.getTotal();
 		}
 		while ( b >= a) {
@@ -139,11 +142,14 @@ public class MiningScreen extends Screen{
 		if (rand.nextInt(selectedOre.durability) <= b) {
 			oreGained++;
 		}
+		int clayGained = rand.nextInt(Math.max(oreGained,1))+game.PD.getLevel(page_ID.MINING);
+	    game.inventory.itemList[10].Increase(clayGained);
 		game.inventory.itemList[selectedOre.ID].Increase(oreGained);
-		game.PD.addExp(Screen.page_ID.MINING, selectedOre.exp*oreGained);
+		game.PD.addExp(Screen.page_ID.MINING, selectedOre.exp*oreGained+clayGained);
 		
+		onScreenItems.add(new ItemGraphic(game.inventory.itemList[10], clayGained, 50, rand.nextInt(16)+123,rand.nextInt(9)+100,1));
 		if (oreGained > 0) {
-			onScreenItems.add(new ItemGraphic(game.inventory.itemList[selectedOre.ID], oreGained, 50, rand.nextInt(32)+125,rand.nextInt(8)+100,1));
+			onScreenItems.add(new ItemGraphic(game.inventory.itemList[selectedOre.ID], oreGained, 50, rand.nextInt(16)+145,rand.nextInt(9)+100,1));
 		}
 		
 	}
@@ -182,9 +188,7 @@ public class MiningScreen extends Screen{
 				displayText("MAX",g,MININGMENUX+7,MININGMENUY+48);
 			}
 			else {
-				displayText(game.inventory.itemList[findSelected().getCost()[0]].Quanity()+"/"+findSelected().getCost()[1],g,MININGMENUX+33,MININGMENUY+48);
-				displayIcon(game.inventory.itemList[findSelected().getCost()[0]],g,MININGMENUX+22,MININGMENUY+44);
-				displayText("cost:",g,MININGMENUX+7,MININGMENUY+48);
+				displayCost(game.inventory.itemList[findSelected().getCostID()].Quanity(),findSelected().getCostQuanity(),g,MININGMENUX+7,MININGMENUY+48);
 			}
 			if (findSelected().getCurrentLevel() == 0) {
 				g.drawImage(Images.miningUIicons[2],(MININGMENUX+74)*Game.SCREENSCALE,(MININGMENUY+63)*Game.SCREENSCALE,32,32,null);

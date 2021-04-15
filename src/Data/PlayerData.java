@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.math.BigInteger;
 
 import main.Game;
 import screens.Screen;
@@ -16,19 +17,37 @@ public class PlayerData {
 	Game game;
 	private long miningExp,woodcuttingExp,fishingExp;
 	private int miningLvl,woodcuttingLvl,fishingLvl;
+	public static final int MINIGMAX=1000,WOODCUTTINGMAX=1000,FISHINGMAX=1000;
+	
+	public int quickChopStack;
+	public int frenzyMeter;
+	public int frenzyLevel;
 	
 	public PlayerData(Game game) {
 		this.game = game;
 		miningExp = woodcuttingExp = fishingExp = 0;
+		miningLvl = woodcuttingLvl = fishingLvl = 1;
+		quickChopStack = 0;
+		frenzyMeter = 0;
+		frenzyLevel = 0;
+	}
+	
+	public void initialize() {
 		loadData();
 	}
 
 
 	public void resetData() {
 		miningExp = woodcuttingExp = fishingExp = 0;
+		miningLvl = woodcuttingLvl = fishingLvl = 1;
+		quickChopStack = 0;
+		frenzyMeter = 0;
+		frenzyLevel = 0;
 		game.inventory=new Items();
-		game.UT=new UpgradeTracker();
+		game.UT=new UpgradeTracker(game);
+		game.UT.initialize();
 		saveData();
+		
 	}
 	
 	
@@ -40,6 +59,10 @@ public class PlayerData {
 			miningExp = Long.parseLong(br.readLine());
 			woodcuttingExp = Long.parseLong(br.readLine());
 			fishingExp = Long.parseLong(br.readLine());
+//			other
+			quickChopStack = Integer.parseInt(br.readLine());
+			frenzyMeter = Integer.parseInt(br.readLine());
+			frenzyLevel = Integer.parseInt(br.readLine());
 //			items
 			for (int i = 0; i < game.inventory.itemList.length; i++) {
 				game.inventory.itemList[i].Increase(Long.parseLong(br.readLine()));
@@ -66,6 +89,10 @@ public class PlayerData {
 			bw.write(""+miningExp); bw.newLine();
 			bw.write(""+woodcuttingExp); bw.newLine();
 			bw.write(""+fishingExp); bw.newLine();
+//			other
+			bw.write(""+quickChopStack); bw.newLine();
+			bw.write(""+frenzyMeter); bw.newLine();
+			bw.write(""+frenzyLevel); bw.newLine();
 //			items
 			for (int i = 0; i < game.inventory.itemList.length; i++) {
 				bw.write(""+game.inventory.itemList[i].Quanity()); bw.newLine();
@@ -115,17 +142,21 @@ public class PlayerData {
 		if (skill == Screen.page_ID.MINING) {
 			miningExp = miningExp-getNextLevelReq(page_ID.MINING);
 			miningLvl++;
+			game.UT.miningPowerBase.setCurrentLevel(miningLvl);
+			saveData();
 		}
 		else if (skill == Screen.page_ID.WOODCUTTING) {
 			woodcuttingExp = woodcuttingExp-getNextLevelReq(page_ID.WOODCUTTING);
-
 			woodcuttingLvl++;
+			game.UT.woodcuttingPowerBase.setCurrentLevel(woodcuttingLvl);
+			saveData();
 
 		}
 		else if (skill == Screen.page_ID.FISHING) {
 			fishingExp = fishingExp-getNextLevelReq(page_ID.FISHING);
 			fishingLvl++;
-
+			game.UT.fishingPowerBase.setCurrentLevel(fishingLvl);
+			saveData();
 		}
 	}
 	

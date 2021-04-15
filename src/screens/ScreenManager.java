@@ -14,6 +14,10 @@ public class ScreenManager {
 	
 	public ScreenManager(Game game) {
 		this.game = game;
+
+	}
+	
+	public void initialize() {
 		page = new LabScreen(game);
 		page.addButtons(game);
 	}

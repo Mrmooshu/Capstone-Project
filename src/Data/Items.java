@@ -1,32 +1,45 @@
 package Data;
 
 import java.awt.image.BufferedImage;
+import java.math.BigInteger;
 
 import resources.Images;
 
 public class Items {
 	
 	public class Item {
-		private long Quanity;
+		private BigInteger Quanity;
 		private BufferedImage Icon;
 		
 		public Item(int ID) {
 			Icon = Images.items[ID];
-			Quanity = 0;
+			Quanity = new BigInteger("0");
+		}
+		public void Increase(BigInteger amount) {
+			Quanity = Quanity.add(amount);
+		}
+		public void Increase(String amount) {
+			Quanity = Quanity.add(new BigInteger(amount));
 		}
 		public void Increase(Long amount) {
-			Quanity += amount;
+			Quanity = Quanity.add(new BigInteger(""+amount));
 		}
 		public void Increase(int amount) {
-			Quanity += amount;
+			Quanity = Quanity.add(new BigInteger(""+amount));
+		}
+		public void Decrease(BigInteger amount) {
+			Quanity = Quanity.subtract(amount);
+		}
+		public void Decrease(String amount) {
+			Quanity = Quanity.subtract(new BigInteger(amount));
 		}
 		public void Decrease(Long amount) {
-			Quanity -= amount;
+			Quanity = Quanity.subtract(new BigInteger(""+amount));
 		}
 		public void Decrease(int amount) {
-			Quanity -= amount;
+			Quanity = Quanity.subtract(new BigInteger(""+amount));
 		}
-		public long Quanity() {
+		public BigInteger Quanity() {
 			return Quanity;
 		}
 		public BufferedImage Icon() {
@@ -47,6 +60,14 @@ public class Items {
 			itemList[i] = new Item(i);
 		}
 		
+		itemList[10].Increase("1000");
+		itemList[11].Increase("1000000");
+		itemList[12].Increase("1000000000");
+		itemList[13].Increase("1000000000000");
+		itemList[14].Increase("1000000000000000");
+		itemList[15].Increase("1000000000000000000");
+		itemList[16].Increase("1000000000000000000000");
+
 	}	
 }
 

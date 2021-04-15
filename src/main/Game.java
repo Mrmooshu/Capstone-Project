@@ -40,9 +40,12 @@ public class Game extends JPanel implements Runnable{
 		setFocusable(true);
 		new Images();
 		inventory = new Items();
-		UT = new UpgradeTracker();
-		SM = new ScreenManager(this);
 		PD = new PlayerData(this);
+		UT = new UpgradeTracker(this);
+		SM = new ScreenManager(this);
+		PD.initialize();
+		UT.initialize();
+		SM.initialize();
 		setLayout(null);
 		isRunning = true;
 		thread = new Thread(this);
