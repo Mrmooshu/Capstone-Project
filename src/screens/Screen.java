@@ -21,7 +21,7 @@ import resources.ItemGraphic;
 public class Screen {
 	
 	public enum page_ID {
-		LAB(0),ZONES(1),SKILLS(2),ITEM(3),TASKS(4),SETTINGS(5),MINING(6),WOODCUTTING(7),FISHING(8);
+		LAB(0),ZONES(1),SKILLS(2),ITEM(3),TASKS(4),SETTINGS(5),MINING(6),WOODCUTTING(7),FISHING(8),START(9);
 		public final int ID;
 		
 		private page_ID(int ID) {
@@ -30,7 +30,7 @@ public class Screen {
 	}
 	private int BUTTON_WIDTH=192,BUTTON_HEIGHT=60,BUTTON_OFFSET=BUTTON_WIDTH+6;
 	
-	private final static String LETTERS = "abcdefghijklmnopqrstuvwxyz.!? +-%:/";
+	private final static String LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.!? +-%:/";
 
 	private final static String NUMBERS = "0123456789";
 	
@@ -75,56 +75,67 @@ public class Screen {
 	}
 	protected static BufferedImage letterToImage(char c) {
 		if (c == '.') {
-			return Images.letters[26];
+			return Images.letters[52];
 		}
 		else if (c == ' ') {
-			return Images.letters[29];
+			return Images.letters[55];
 		}
 		else if (c == '+') {
-			return Images.letters[30];
+			return Images.letters[56];
 		}
 		else if (c == '-') {
-			return Images.letters[31];
+			return Images.letters[57];
 		}
 		else if (c == '%') {
-			return Images.letters[32];
+			return Images.letters[58];
 		}
 		else if (c == ':') {
-			return Images.letters[33];
+			return Images.letters[59];
 		}
 		else if (c == '/') {
-			return Images.letters[34];
+			return Images.letters[60];
 		}
-		return Images.letters[(int)Character.toUpperCase(c)-65];
+		else if (Character.isUpperCase(c)) {
+			return Images.letters[(int)c-39];
+		}
+		else if (Character.isLowerCase(c)) {
+			return Images.letters[(int)c-97];
+		}
+		return null;
 	}
 	protected static BufferedImage letterToImage(char c, Color color) {
 		BufferedImage[] coloredLetters = Images.changeColor(Images.letters, color);
 		if (c == '.') {
-			return coloredLetters[26];
+			return coloredLetters[52];
 		}
 		else if (c == ' ') {
-			return coloredLetters[29];
+			return coloredLetters[55];
 		}
 		else if (c == '+') {
-			return coloredLetters[30];
+			return coloredLetters[56];
 		}
 		else if (c == '-') {
-			return coloredLetters[31];
+			return coloredLetters[57];
 		}
 		else if (c == '%') {
-			return coloredLetters[32];
+			return coloredLetters[58];
 		}
 		else if (c == ':') {
-			return coloredLetters[33];
+			return coloredLetters[59];
 		}
 		else if (c == '/') {
-			return coloredLetters[34];
+			return coloredLetters[60];
 		}
-		return coloredLetters[(int)Character.toUpperCase(c)-65];
-	}
+		else if (Character.isUpperCase(c)) {
+			return coloredLetters[(int)c-39];
+		}
+		else if (Character.isLowerCase(c)) {
+			return coloredLetters[(int)c-97];
+		}
+		return null;	}
 	public static void displayText(String text, Graphics g, int x, int y) {
 		for (int i = 0; i < text.length(); i++) {
-			if (LETTERS.indexOf(text.toLowerCase().charAt(i))!=-1){
+			if (LETTERS.indexOf(text.charAt(i))!=-1){
 				displayLetter(text.charAt(i), g, x+i*3, y);
 			}
 			if (NUMBERS.indexOf(text.charAt(i))!=-1) {
@@ -134,7 +145,7 @@ public class Screen {
 	}
 	public static void displayText(String text, Graphics g, int x, int y, Color color) {
 		for (int i = 0; i < text.length(); i++) {
-			if (LETTERS.indexOf(text.toLowerCase().charAt(i))!=-1){
+			if (LETTERS.indexOf(text.charAt(i))!=-1){
 				displayLetter(text.charAt(i), g, x+i*3, y, color);
 			}
 			if (NUMBERS.indexOf(text.charAt(i))!=-1) {
@@ -160,16 +171,19 @@ public class Screen {
 	}
 	
 	protected void displayItems(Item[] items, Graphics g, int x, int y) {
-		for (int i = 0; i < items.length; i++) {
-			displayIcon(items[i], g, x, y+(i*10));
-			if (items[i].Quanity().toString() == "0") {
-				displayBigNumbers(new BigInteger(""+0), g, x+11, y+4+(i*10));
-			}
-			else {
-				BigInteger num = items[i].Quanity();
-				displayBigNumbers(num, g, x+11, y+4+(i*10));
+		if (items != null) {
+			for (int i = 0; i < items.length; i++) {
+				displayIcon(items[i], g, x, y+(i*10));
+				if (items[i].Quanity().toString() == "0") {
+					displayBigNumbers(new BigInteger(""+0), g, x+11, y+4+(i*10));
+				}
+				else {
+					BigInteger num = items[i].Quanity();
+					displayBigNumbers(num, g, x+11, y+4+(i*10));
+				}
 			}
 		}
+
 	}
 	
 	public static void displayBigNumbers(BigInteger number, Graphics g, int x, int y) {
@@ -202,26 +216,27 @@ public class Screen {
 		}
 	}
 	
-	protected void displayCost(BigInteger quanity, BigInteger cost, Graphics g, int x, int y) {
-		displayBigNumbers(quanity,g,x+15,y);
-		displayBigNumbers(cost,g,x+33,y);
-		displayText("/",g,x+28,y);
-		displayText("cost:",g,x,y);
+	protected void displayCost(BigInteger quanity, BigInteger cost, Item item, Graphics g, int x, int y) {
+		displayBigNumbers(quanity,g,x+25,y);
+		displayBigNumbers(cost,g,x+43,y);
+		displayText("/",g,x+38,y);
+		displayText("cost:",g,x+11,y);
+		displayIcon(item, g, x, y-4);
 	}
 	
-	protected void displayExpBar(Graphics g,int x,int y,long expEnd,page_ID skill) {
-		float a = (float)game.PD.getExp(skill);
-		float b = a/(float)expEnd;
-		int c = (int) (b*99);
+	protected void displayExpBar(Graphics g,int x,int y,BigInteger expEnd,page_ID skill) {
+		BigInteger a = game.PD.getExp(skill);
+		BigInteger b = a.divide(expEnd);
+		int c = Integer.parseInt((b.multiply(new BigInteger("99"))).toString());
 		g.setColor(Images.CYAN);
 		g.fillRect(x, y, c, 3*Game.SCREENSCALE);
 	}
 	
-	public int getPercent(double val) {
+	public static int getPercent(double val) {
 		return (int)(100 * val);
 	}
 	
-	public double getSeconds(double val) {
+	public static double getSeconds(double val) {
 		return (double)Math.round((val/60)*100)/100;
 	}
 	
@@ -296,13 +311,23 @@ public class Screen {
 		
 		zones.setBounds(6,9, BUTTON_WIDTH, BUTTON_HEIGHT);
 	    zones.setContentAreaFilled(false);
+	    zones.setBorderPainted(false);
+	    zones.setFocusPainted(false);
 		skills.setBounds(6+(BUTTON_OFFSET),9, BUTTON_WIDTH, BUTTON_HEIGHT);
 		skills.setContentAreaFilled(false);
+		skills.setBorderPainted(false);
+		skills.setFocusPainted(false);
 		items.setBounds(6+(BUTTON_OFFSET*2),9, BUTTON_WIDTH, BUTTON_HEIGHT);
 		items.setContentAreaFilled(false);
+		items.setBorderPainted(false);
+		items.setFocusPainted(false);
 		tasks.setBounds(6+(BUTTON_OFFSET*3),9, BUTTON_WIDTH, BUTTON_HEIGHT);
 		tasks.setContentAreaFilled(false);
+		tasks.setBorderPainted(false);
+		tasks.setFocusPainted(false);
 		settings.setBounds(6+(BUTTON_OFFSET*4),9, BUTTON_WIDTH-125, BUTTON_HEIGHT);
 		settings.setContentAreaFilled(false);
+		settings.setBorderPainted(false);
+		settings.setFocusPainted(false);
 	}
 }

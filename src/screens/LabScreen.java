@@ -143,7 +143,7 @@ public class LabScreen extends Screen{
 			displayText("MAX",g,12,112);
 		}
 		else {
-			displayCost(game.inventory.itemList[findSelected().getCostID()].Quanity(),findSelected().getCostQuanity(),g,12,111);
+			displayCost(game.inventory.itemList[findSelected().getCostID()].Quanity(),findSelected().getCostQuanity(),game.inventory.itemList[findSelected().getCostID()],g,12,111);
 		}
 		if (findSelected().getCurrentLevel() == 0) {
 			g.drawImage(Images.LabUIicons[2],79*Game.SCREENSCALE,126*Game.SCREENSCALE,32,32,null);
@@ -234,6 +234,8 @@ public class LabScreen extends Screen{
 			});
 		genPage.setBounds(264*Game.SCREENSCALE,34*Game.SCREENSCALE,26*Game.SCREENSCALE,25*Game.SCREENSCALE);
 		genPage.setContentAreaFilled(false);
+		genPage.setBorderPainted(false);
+		genPage.setFocusPainted(false);
 	    
 		charPage = new JButton();
 		charPage.addActionListener(new ActionListener() {
@@ -244,6 +246,8 @@ public class LabScreen extends Screen{
 			});
 		charPage.setBounds(264*Game.SCREENSCALE,62*Game.SCREENSCALE,26*Game.SCREENSCALE,25*Game.SCREENSCALE);
 		charPage.setContentAreaFilled(false);
+		charPage.setBorderPainted(false);
+		charPage.setFocusPainted(false);
 		
 		shopPage = new JButton();
 		shopPage.addActionListener(new ActionListener() {
@@ -254,6 +258,8 @@ public class LabScreen extends Screen{
 			});
 		shopPage.setBounds(264*Game.SCREENSCALE,90*Game.SCREENSCALE,26*Game.SCREENSCALE,25*Game.SCREENSCALE);
 		shopPage.setContentAreaFilled(false);
+		shopPage.setBorderPainted(false);
+		shopPage.setFocusPainted(false);
 		
 		presPage = new JButton();
 		presPage.addActionListener(new ActionListener() {
@@ -264,6 +270,8 @@ public class LabScreen extends Screen{
 			});
 		presPage.setBounds(264*Game.SCREENSCALE,118*Game.SCREENSCALE,26*Game.SCREENSCALE,25*Game.SCREENSCALE);
 		presPage.setContentAreaFilled(false);
+		presPage.setBorderPainted(false);
+		presPage.setFocusPainted(false);
 		
 		genButton = new JButton();
 		genButton.addActionListener(new ActionListener(){
@@ -275,7 +283,9 @@ public class LabScreen extends Screen{
 			});
 		genButton.setBounds((Game.WIDTH/2-50)*Game.SCREENSCALE,(Game.HEIGHT/2-40)*Game.SCREENSCALE, 100*Game.SCREENSCALE, 80*Game.SCREENSCALE);
 		genButton.setContentAreaFilled(false);
-	    
+		genButton.setBorderPainted(false);
+		genButton.setFocusPainted(false);
+		
 		skill1Button = new JButton();
 		skill1Button.addActionListener(new ActionListener(){
 			@Override
@@ -286,6 +296,8 @@ public class LabScreen extends Screen{
 			});
 		skill1Button.setBounds(5*Game.SCREENSCALE,32*Game.SCREENSCALE,16*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		skill1Button.setContentAreaFilled(false);
+		skill1Button.setBorderPainted(false);
+		skill1Button.setFocusPainted(false);
 		
 		skill2Button = new JButton();
 		skill2Button.addActionListener(new ActionListener(){
@@ -297,6 +309,8 @@ public class LabScreen extends Screen{
 			});
 		skill2Button.setBounds(22*Game.SCREENSCALE,32*Game.SCREENSCALE,16*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		skill2Button.setContentAreaFilled(false);
+		skill2Button.setBorderPainted(false);
+		skill2Button.setFocusPainted(false);
 		
 		skill3Button = new JButton();
 		skill3Button.addActionListener(new ActionListener(){
@@ -308,6 +322,8 @@ public class LabScreen extends Screen{
 			});
 		skill3Button.setBounds(39*Game.SCREENSCALE,32*Game.SCREENSCALE,16*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		skill3Button.setContentAreaFilled(false);
+		skill3Button.setBorderPainted(false);
+		skill3Button.setFocusPainted(false);
 		
 		upgradeCharButton = new JButton();
 		upgradeCharButton.addActionListener(new ActionListener(){
@@ -318,6 +334,8 @@ public class LabScreen extends Screen{
 			});
 		upgradeCharButton.setBounds(69*Game.SCREENSCALE,123*Game.SCREENSCALE,32*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		upgradeCharButton.setContentAreaFilled(false);
+		upgradeCharButton.setBorderPainted(false);
+		upgradeCharButton.setFocusPainted(false);
 		
 		charLeftButton = new JButton();
 		charLeftButton.addActionListener(new ActionListener(){
@@ -331,6 +349,8 @@ public class LabScreen extends Screen{
 			});
 		charLeftButton.setBounds(5*Game.SCREENSCALE,66*Game.SCREENSCALE,16*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		charLeftButton.setContentAreaFilled(false);
+		charLeftButton.setBorderPainted(false);
+		charLeftButton.setFocusPainted(false);
 		
 		charRightButton = new JButton();
 		charRightButton.addActionListener(new ActionListener(){
@@ -344,6 +364,8 @@ public class LabScreen extends Screen{
 			});
 		charRightButton.setBounds(90*Game.SCREENSCALE,66*Game.SCREENSCALE,16*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		charRightButton.setContentAreaFilled(false);
+		charRightButton.setBorderPainted(false);
+		charRightButton.setFocusPainted(false);
 	}
 	
 

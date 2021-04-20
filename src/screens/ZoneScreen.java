@@ -75,12 +75,20 @@ public class ZoneScreen extends Screen{
 		});
 		labButton.setBounds((17)*Game.SCREENSCALE,(32)*Game.SCREENSCALE, 32*Game.SCREENSCALE, 32*Game.SCREENSCALE);
 	    labButton.setContentAreaFilled(false);
+	    labButton.setBorderPainted(false);
+	    labButton.setFocusPainted(false);
 	    miningButton.setBounds((73)*Game.SCREENSCALE,(32)*Game.SCREENSCALE, 32*Game.SCREENSCALE, 32*Game.SCREENSCALE);
 	    miningButton.setContentAreaFilled(false);
+	    miningButton.setBorderPainted(false);
+	    miningButton.setFocusPainted(false);
 	    woodcuttingButton.setBounds((129)*Game.SCREENSCALE,(32)*Game.SCREENSCALE, 32*Game.SCREENSCALE, 32*Game.SCREENSCALE);
 	    woodcuttingButton.setContentAreaFilled(false);
+	    woodcuttingButton.setBorderPainted(false);
+		woodcuttingButton.setFocusPainted(false);
 	    fishingButton.setBounds((185)*Game.SCREENSCALE,(32)*Game.SCREENSCALE, 32*Game.SCREENSCALE, 32*Game.SCREENSCALE);
 	    fishingButton.setContentAreaFilled(false);
+	    fishingButton.setBorderPainted(false);
+	    fishingButton.setFocusPainted(false);
 	}
 	
 }

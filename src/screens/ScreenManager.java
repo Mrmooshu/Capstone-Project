@@ -18,7 +18,7 @@ public class ScreenManager {
 	}
 	
 	public void initialize() {
-		page = new LabScreen(game);
+		page = new StartScreen(game);
 		page.addButtons(game);
 	}
 	

@@ -11,6 +11,7 @@ import java.util.Random;
 
 import javax.swing.JButton;
 
+import Data.Items.Item;
 import Data.UpgradeTracker.Upgrade;
 import main.Game;
 import resources.Animation;
@@ -24,14 +25,15 @@ public class MiningScreen extends Screen{
 	public enum stat_tab {
 		POWER,SPEED,CRITCHANCE,CRITMOD,STATS;
 	}
+
 	public enum Ore {
-		COPPER(11,100,5,1),IRON(12,200,15,11),SILVER(13,600,60,21),TUNGSTON(14,2400,300,31),GOLD(15,12000,1800,41),COBALT(16,72000,12600,51);
+		COPPER(11,100,new BigInteger("5"),1),IRON(12,200,new BigInteger("15"),11),SILVER(13,600,new BigInteger("60"),21),TUNGSTON(14,2400,new BigInteger("300"),31),GOLD(15,12000,new BigInteger("1800"),41),COBALT(16,72000,new BigInteger("12600"),51);
 		private final int ID;
 		private final int durability;
-		private final double exp;
+		private final BigInteger exp;
 		private final int unlockLevel;
 		
-		private Ore(int ID,int durability,double exp,int unlockLevel) {
+		private Ore(int ID,int durability,BigInteger exp,int unlockLevel) {
 			this.ID = ID;
 			this.durability = durability;
 			this.exp = exp;
@@ -50,14 +52,13 @@ public class MiningScreen extends Screen{
 			}
 			return values()[ordinal()-1%values().length];
 		}
-		
 	}
 	
-	private final int MININGMENUX = 186;
-	private final int MININGMENUY = 30;
-	private final int MINEBASEINTERVAL = 300;
+	private static final int MININGMENUX = 186;
+	private static final int MININGMENUY = 30;
+	private static final int MINEBASEINTERVAL = 300;
 	private int mineIntervalCounter;
-	private long expfornextlevel;
+	private BigInteger expfornextlevel;
 	
 	private stat_tab statTab;
 	private Ore selectedOre;
@@ -76,7 +77,7 @@ public class MiningScreen extends Screen{
 		defineButtons();
 		miningButtons = new LinkedList<JButton>();
 		statTab = stat_tab.POWER;
-		selectedOre=Ore.COPPER;
+		selectedOre=game.PD.oreSelected;
 		miningButtons.add(oreLeft);
 		miningButtons.add(oreRight);
 		miningButtons.add(statPage);
@@ -122,7 +123,50 @@ public class MiningScreen extends Screen{
 		return null;
 	}
 	
-	private void mineOre() {
+	public static Item[] simulateMineOre(Game game, long years, long days, long hours, long minutes) {
+		game.PD.saveToggle = false;
+		Item[] itemsGained = new Item[] {new Item(game.PD.oreSelected.ID), new Item(10)};
+		MiningScreen page = new MiningScreen(game);
+		double actionsPerMinute = 60/getSeconds(Math.max(MINEBASEINTERVAL-game.UT.miningSpeed.getTotal(),20));
+		double actionsPerHour = actionsPerMinute*60;
+		double actionsPerDay = actionsPerHour*24;
+		long actionsPerYear = (long)(actionsPerDay*365);
+		for (int i = 0; i < minutes; i++) {
+			for (int j = 0; j < actionsPerMinute; j++) {
+				Item[] gains = page.mineOre();
+				itemsGained[0].Increase(gains[0].Quanity());
+				itemsGained[1].Increase(gains[1].Quanity());
+			}
+		}
+		for (int i = 0; i < hours; i++) {
+			for (int j = 0; j < actionsPerHour; j++) {
+				Item[] gains = page.mineOre();
+				itemsGained[0].Increase(gains[0].Quanity());
+				itemsGained[1].Increase(gains[1].Quanity());
+			}
+		}
+		for (int i = 0; i < days; i++) {
+			for (int j = 0; j < actionsPerDay; j++) {
+				Item[] gains = page.mineOre();
+				itemsGained[0].Increase(gains[0].Quanity());
+				itemsGained[1].Increase(gains[1].Quanity());
+			}
+		}
+		for (int i = 0; i < years; i++) {
+			for (long j = 0; j < actionsPerYear; j++) {
+				Item[] gains = page.mineOre();
+				itemsGained[0].Increase(gains[0].Quanity());
+				itemsGained[1].Increase(gains[1].Quanity());
+			}
+		}
+		while (game.PD.getExp(page_ID.MINING).compareTo(game.PD.getNextLevelReq(page_ID.MINING)) == 1) {
+			game.PD.incrementLevel(page_ID.MINING);
+		}
+		game.PD.saveToggle = true;
+		return itemsGained;
+	}
+	
+	private Item[] mineOre() {
 		Random rand = new Random();
 		int oreGained = 0;
 		double a = selectedOre.durability;
@@ -145,13 +189,20 @@ public class MiningScreen extends Screen{
 		int clayGained = rand.nextInt(Math.max(oreGained,1))+game.PD.getLevel(page_ID.MINING);
 	    game.inventory.itemList[10].Increase(clayGained);
 		game.inventory.itemList[selectedOre.ID].Increase(oreGained);
-		game.PD.addExp(Screen.page_ID.MINING, selectedOre.exp*oreGained+clayGained);
+		game.PD.addExp(Screen.page_ID.MINING, selectedOre.exp.multiply(new BigInteger(""+oreGained)).add(new BigInteger(""+clayGained)));
 		
 		onScreenItems.add(new ItemGraphic(game.inventory.itemList[10], clayGained, 50, rand.nextInt(16)+123,rand.nextInt(9)+100,1));
 		if (oreGained > 0) {
 			onScreenItems.add(new ItemGraphic(game.inventory.itemList[selectedOre.ID], oreGained, 50, rand.nextInt(16)+145,rand.nextInt(9)+100,1));
 		}
+		Item oreTotal = new Item(selectedOre.ID); oreTotal.Increase(oreGained);
+		Item clayTotal = new Item(10); clayTotal.Increase(clayGained);
 		
+		if (game.PD.getExp(page_ID.MINING).compareTo(expfornextlevel) == 1){
+			game.PD.incrementLevel(page_ID.MINING);
+			expfornextlevel = game.PD.getNextLevelReq(page_ID.MINING);
+		}
+		return new Item[] {oreTotal, clayTotal};
 	}
 	
 	public void draw(Graphics g) {
@@ -188,7 +239,7 @@ public class MiningScreen extends Screen{
 				displayText("MAX",g,MININGMENUX+7,MININGMENUY+48);
 			}
 			else {
-				displayCost(game.inventory.itemList[findSelected().getCostID()].Quanity(),findSelected().getCostQuanity(),g,MININGMENUX+7,MININGMENUY+48);
+				displayCost(game.inventory.itemList[findSelected().getCostID()].Quanity(),findSelected().getCostQuanity(),game.inventory.itemList[findSelected().getCostID()],g,MININGMENUX+7,MININGMENUY+48);
 			}
 			if (findSelected().getCurrentLevel() == 0) {
 				g.drawImage(Images.miningUIicons[2],(MININGMENUX+74)*Game.SCREENSCALE,(MININGMENUY+63)*Game.SCREENSCALE,32,32,null);
@@ -203,12 +254,12 @@ public class MiningScreen extends Screen{
 			g.drawImage(Images.staticons[1],(MININGMENUX+3)*Game.SCREENSCALE,(MININGMENUY+14)*Game.SCREENSCALE,32,32,null);
 			g.drawImage(Images.staticons[2],(MININGMENUX+3)*Game.SCREENSCALE,(MININGMENUY+24)*Game.SCREENSCALE,32,32,null);
 			g.drawImage(Images.staticons[3],(MININGMENUX+3)*Game.SCREENSCALE,(MININGMENUY+34)*Game.SCREENSCALE,32,32,null);
-			displayText("mining power",g,MININGMENUX+15,MININGMENUY+6);
+			displayText("Mining power",g,MININGMENUX+15,MININGMENUY+6);
 			displayText("mining speed",g,MININGMENUX+15,MININGMENUY+16);
 			displayText("crit chance",g,MININGMENUX+15,MININGMENUY+26);
 			displayText("crit mod",g,MININGMENUX+15,MININGMENUY+36);
 			displayText(""+game.UT.miningPower.getTotalText(),g,MININGMENUX+15,MININGMENUY+10);
-			displayText(""+getSeconds(MINEBASEINTERVAL-game.UT.miningSpeed.getTotal())+" sec delay",g,MININGMENUX+15,MININGMENUY+20);
+			displayText(""+getSeconds(Math.max(MINEBASEINTERVAL-game.UT.miningSpeed.getTotal(),20))+" sec delay",g,MININGMENUX+15,MININGMENUY+20);
 			displayText(""+getPercent(game.UT.miningCritChance.getTotal())+"%",g,MININGMENUX+15,MININGMENUY+30);
 			displayText(""+game.UT.miningCritMod.getTotalText(),g,MININGMENUX+15,MININGMENUY+40);
 		}
@@ -227,10 +278,6 @@ public class MiningScreen extends Screen{
 			mineIntervalCounter = (int) (Math.max(MINEBASEINTERVAL-game.UT.miningSpeed.getTotal(),20));
 			mining.setFrameCounter(0);
 		}
-		if (game.PD.getExp(page_ID.MINING) >= expfornextlevel){
-			game.PD.incrementLevel(page_ID.MINING);
-			expfornextlevel = game.PD.getNextLevelReq(page_ID.MINING);
-		}
 		drawOnScreenItems(g);
 		displayExpBar(g, 228*Game.SCREENSCALE, 132*Game.SCREENSCALE, expfornextlevel, page_ID.MINING);
 	}
@@ -241,20 +288,26 @@ public class MiningScreen extends Screen{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				selectedOre = selectedOre.getPrev();
+				game.PD.oreSelected = selectedOre;
 				}
 			});
 		oreLeft.setBounds(124*Game.SCREENSCALE,30*Game.SCREENSCALE,12*Game.SCREENSCALE,14*Game.SCREENSCALE);
 		oreLeft.setContentAreaFilled(false);
+		oreLeft.setBorderPainted(false);
+		oreLeft.setFocusPainted(false);
 		
 		oreRight = new JButton();
 		oreRight.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				selectedOre = selectedOre.getNext();
+				game.PD.oreSelected = selectedOre;
 				}
 			});
 		oreRight.setBounds(154*Game.SCREENSCALE,30*Game.SCREENSCALE,12*Game.SCREENSCALE,14*Game.SCREENSCALE);
 		oreRight.setContentAreaFilled(false);
+		oreRight.setBorderPainted(false);
+		oreRight.setFocusPainted(false);
 		
 		upgradePage = new JButton();
 		upgradePage.addActionListener(new ActionListener() {
@@ -277,6 +330,8 @@ public class MiningScreen extends Screen{
 			});
 		upgradePage.setBounds((MININGMENUX+3)*Game.SCREENSCALE,(MININGMENUY+79)*Game.SCREENSCALE,31*Game.SCREENSCALE,10*Game.SCREENSCALE);
 		upgradePage.setContentAreaFilled(false);
+		upgradePage.setBorderPainted(false);
+		upgradePage.setFocusPainted(false);
 		
 		statPage = new JButton();
 		statPage.addActionListener(new ActionListener() {
@@ -294,6 +349,8 @@ public class MiningScreen extends Screen{
 			});
 		statPage.setBounds((MININGMENUX+35)*Game.SCREENSCALE,(MININGMENUY+79)*Game.SCREENSCALE,31*Game.SCREENSCALE,10*Game.SCREENSCALE);
 		statPage.setContentAreaFilled(false);
+		statPage.setBorderPainted(false);
+		statPage.setFocusPainted(false);
 		
 		miningPowerSelect = new JButton();
 		miningPowerSelect.addActionListener(new ActionListener() {
@@ -304,6 +361,8 @@ public class MiningScreen extends Screen{
 			});
 		miningPowerSelect.setBounds((MININGMENUX+14)*Game.SCREENSCALE,(MININGMENUY+4)*Game.SCREENSCALE,16*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		miningPowerSelect.setContentAreaFilled(false);
+		miningPowerSelect.setBorderPainted(false);
+		miningPowerSelect.setFocusPainted(false);
 		
 		miningSpeedSelect = new JButton();
 		miningSpeedSelect.addActionListener(new ActionListener() {
@@ -314,6 +373,8 @@ public class MiningScreen extends Screen{
 			});
 		miningSpeedSelect.setBounds((MININGMENUX+33)*Game.SCREENSCALE,(MININGMENUY+4)*Game.SCREENSCALE,16*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		miningSpeedSelect.setContentAreaFilled(false);
+		miningSpeedSelect.setBorderPainted(false);
+		miningSpeedSelect.setFocusPainted(false);
 		
 		miningCritChanceSelect = new JButton();
 		miningCritChanceSelect.addActionListener(new ActionListener() {
@@ -324,6 +385,8 @@ public class MiningScreen extends Screen{
 			});
 		miningCritChanceSelect.setBounds((MININGMENUX+52)*Game.SCREENSCALE,(MININGMENUY+4)*Game.SCREENSCALE,16*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		miningCritChanceSelect.setContentAreaFilled(false);
+		miningCritChanceSelect.setBorderPainted(false);
+		miningCritChanceSelect.setFocusPainted(false);
 
 		miningCritModSelect = new JButton();
 		miningCritModSelect.addActionListener(new ActionListener() {
@@ -334,6 +397,8 @@ public class MiningScreen extends Screen{
 			});
 		miningCritModSelect.setBounds((MININGMENUX+71)*Game.SCREENSCALE,(MININGMENUY+4)*Game.SCREENSCALE,16*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		miningCritModSelect.setContentAreaFilled(false);
+		miningCritModSelect.setBorderPainted(false);
+		miningCritModSelect.setFocusPainted(false);
 		
 		statUpgrade = new JButton();
 		statUpgrade.addActionListener(new ActionListener() {
@@ -344,6 +409,9 @@ public class MiningScreen extends Screen{
 			});
 		statUpgrade.setBounds((MININGMENUX+64)*Game.SCREENSCALE,(MININGMENUY+60)*Game.SCREENSCALE,32*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		statUpgrade.setContentAreaFilled(false);
+		statUpgrade.setBorderPainted(false);
+		statUpgrade.setFocusPainted(false);
+		
 		
 	}
 	

@@ -7,7 +7,7 @@ import resources.Images;
 
 public class Items {
 	
-	public class Item {
+	public static class Item {
 		private BigInteger Quanity;
 		private BufferedImage Icon;
 		
@@ -59,14 +59,6 @@ public class Items {
 		for (int i = 0; i < itemList.length; i++) {
 			itemList[i] = new Item(i);
 		}
-		
-		itemList[10].Increase("1000");
-		itemList[11].Increase("1000000");
-		itemList[12].Increase("1000000000");
-		itemList[13].Increase("1000000000000");
-		itemList[14].Increase("1000000000000000");
-		itemList[15].Increase("1000000000000000000");
-		itemList[16].Increase("1000000000000000000000");
 
 	}	
 }

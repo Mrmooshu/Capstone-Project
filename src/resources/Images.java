@@ -71,7 +71,7 @@ public class Images {
 		
 		items = new BufferedImage[200];
 		numbers = new BufferedImage[10];
-		letters = new BufferedImage[35];
+		letters = new BufferedImage[61];
 
 		generator = new BufferedImage[12];
 		handle = new BufferedImage[16];
@@ -87,7 +87,9 @@ public class Images {
 			backgrounds[Screen.page_ID.MINING.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/mining_background.png"));
 			backgrounds[Screen.page_ID.WOODCUTTING.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/woodcutting_background.png"));
 			backgrounds[Screen.page_ID.FISHING.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/fishing_background.png"));
+			backgrounds[Screen.page_ID.START.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/start_background.png"));
 
+			
 //			UI
 			headerUI = ImageIO.read(getClass().getResourceAsStream("/resources/UI/headerUI.png"));
 			

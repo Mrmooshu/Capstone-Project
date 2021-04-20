@@ -4,12 +4,14 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Random;
 
 import javax.swing.JButton;
 
+import Data.Items.Item;
 import Data.UpgradeTracker.Upgrade;
 import main.Game;
 import resources.Animation;
@@ -24,14 +26,14 @@ public class WoodcuttingScreen extends Screen{
 		POWER,SPEED,QUICKCHOP,POWERCHOP,STATS;
 	}
 	public enum Wood {
-		OAK(21,100,5,1),BIRCH(22,200,15,11),TEAK(23,600,60,21),WILLOW(24,2400,300,31),MAHOGANY(25,12000,1800,41),MAPLE(26,72000,12600,51);
+		OAK(21,100,new BigInteger("5"),1),BIRCH(22,200,new BigInteger("15"),11),TEAK(23,600,new BigInteger("60"),21),WILLOW(24,2400,new BigInteger("300"),31),MAHOGANY(25,12000,new BigInteger("1800"),41),MAPLE(26,72000,new BigInteger("12600"),51);
 		private final int ID;
 		private final int durability;
-		private final double exp;
+		private final BigInteger exp;
 		private final int unlockLevel;
 
 		
-		private Wood(int ID,int durability,double exp,int unlockLevel) {
+		private Wood(int ID,int durability,BigInteger exp,int unlockLevel) {
 			this.ID = ID;
 			this.durability = durability;
 			this.exp = exp;
@@ -53,11 +55,11 @@ public class WoodcuttingScreen extends Screen{
 		
 	}
 	
-	private final int WOODCUTTINGMENUX = 186;
-	private final int WOODCUTTINGMENUY = 30;
-	private final int CHOPBASEINTERVAL = 300;
+	private final static int WOODCUTTINGMENUX = 186;
+	private final static int WOODCUTTINGMENUY = 30;
+	private final static int CHOPBASEINTERVAL = 300;
 	private int chopIntervalCounter;
-	private long expfornextlevel;
+	private BigInteger expfornextlevel;
 
 	
 	private stat_tab statTab;
@@ -78,7 +80,7 @@ public class WoodcuttingScreen extends Screen{
 		defineButtons();
 		woodcuttingButtons = new LinkedList<JButton>();
 		statTab = stat_tab.POWER;
-		selectedTree=Wood.OAK;
+		selectedTree=game.PD.treeSelected;
 		woodcuttingButtons.add(treeLeft);
 		woodcuttingButtons.add(treeRight);
 		woodcuttingButtons.add(statPage);
@@ -124,13 +126,53 @@ public class WoodcuttingScreen extends Screen{
 		return null;
 	}
 	
-	private void chopWood() {
+	public static Item[] simulateChopWood(Game game, long years, long days, long hours, long minutes) {
+		game.PD.saveToggle = false;
+		Item[] itemsGained = new Item[] {new Item(game.PD.treeSelected.ID), new Item(20)};
+		WoodcuttingScreen page = new WoodcuttingScreen(game);
+		double actionsPerMinute = 60/getSeconds(Math.max(CHOPBASEINTERVAL-game.UT.miningSpeed.getTotal(),20));
+		double actionsPerHour = actionsPerMinute*60;
+		double actionsPerDay = actionsPerHour*24;
+		long actionsPerYear = (long)(actionsPerDay*365);
+		for (int i = 0; i < minutes; i++) {
+			for (int j = 0; j < actionsPerMinute; j++) {
+				Item[] gains = page.chopWood();
+				itemsGained[0].Increase(gains[0].Quanity());
+				itemsGained[1].Increase(gains[1].Quanity());
+			}
+		}
+		for (int i = 0; i < hours; i++) {
+			for (int j = 0; j < actionsPerHour; j++) {
+				Item[] gains = page.chopWood();
+				itemsGained[0].Increase(gains[0].Quanity());
+				itemsGained[1].Increase(gains[1].Quanity());
+			}
+		}
+		for (int i = 0; i < days; i++) {
+			for (int j = 0; j < actionsPerDay; j++) {
+				Item[] gains = page.chopWood();
+				itemsGained[0].Increase(gains[0].Quanity());
+				itemsGained[1].Increase(gains[1].Quanity());
+			}
+		}
+		for (int i = 0; i < years; i++) {
+			for (long j = 0; j < actionsPerYear; j++) {
+				Item[] gains = page.chopWood();
+				itemsGained[0].Increase(gains[0].Quanity());
+				itemsGained[1].Increase(gains[1].Quanity());
+			}
+		}
+		game.PD.saveToggle = true;
+		return itemsGained;
+	}
+	
+	private Item[] chopWood() {
 		Random rand = new Random();
 		int woodGained = 0;
 		double a = selectedTree.durability;
 		double b = game.UT.woodcuttingPower.getTotal();
 		double c = game.UT.quickChopChance.getTotal()*100;
-		if (rand.nextInt(101) <= c) {
+		if (rand.nextInt(101) <= c && quickChopStack < 4) {
 			quickChopStack++;
 			game.PD.quickChopStack = quickChopStack;
 		}
@@ -144,13 +186,21 @@ public class WoodcuttingScreen extends Screen{
 		int leafGained = rand.nextInt(Math.max(woodGained,1))+game.PD.getLevel(page_ID.WOODCUTTING);
 	    game.inventory.itemList[20].Increase(leafGained);
 		game.inventory.itemList[selectedTree.ID].Increase(woodGained);
-		game.PD.addExp(Screen.page_ID.WOODCUTTING, selectedTree.exp*woodGained+leafGained);
+		game.PD.addExp(Screen.page_ID.WOODCUTTING, selectedTree.exp.multiply(new BigInteger(""+woodGained).add(new BigInteger(""+leafGained))));
 		
 		onScreenItems.add(new ItemGraphic(game.inventory.itemList[20], leafGained, 50, rand.nextInt(16)+123,rand.nextInt(9)+70,1));
 		if (woodGained > 0) {
 			onScreenItems.add(new ItemGraphic(game.inventory.itemList[selectedTree.ID], woodGained, 50, rand.nextInt(16)+145,rand.nextInt(9)+70,1));
 		}
+		Item woodTotal = new Item(selectedTree.ID); woodTotal.Increase(woodGained);
+		Item leafTotal = new Item(20); leafTotal.Increase(leafGained);
 		
+		if (game.PD.getExp(page_ID.WOODCUTTING).compareTo(expfornextlevel) == 1){
+			game.PD.incrementLevel(page_ID.WOODCUTTING);
+			expfornextlevel = game.PD.getNextLevelReq(page_ID.WOODCUTTING);
+		}
+		
+		return new Item[] {woodTotal, leafTotal};
 	}
 	
 	
@@ -188,7 +238,7 @@ public class WoodcuttingScreen extends Screen{
 				displayText("MAX",g,WOODCUTTINGMENUX+7,WOODCUTTINGMENUY+48);
 			}
 			else {
-				displayCost(game.inventory.itemList[findSelected().getCostID()].Quanity(),findSelected().getCostQuanity(),g,WOODCUTTINGMENUX+7,WOODCUTTINGMENUY+48);
+				displayCost(game.inventory.itemList[findSelected().getCostID()].Quanity(),findSelected().getCostQuanity(),game.inventory.itemList[findSelected().getCostID()],g,WOODCUTTINGMENUX+7,WOODCUTTINGMENUY+48);
 			}
 			if (findSelected().getCurrentLevel() == 0) {
 				g.drawImage(Images.woodcuttingUIicons[2],(WOODCUTTINGMENUX+74)*Game.SCREENSCALE,(WOODCUTTINGMENUY+63)*Game.SCREENSCALE,32,32,null);
@@ -208,7 +258,7 @@ public class WoodcuttingScreen extends Screen{
 			displayText("quickchop chance",g,WOODCUTTINGMENUX+15,WOODCUTTINGMENUY+26);
 			displayText("powerchop chance",g,WOODCUTTINGMENUX+15,WOODCUTTINGMENUY+36);
 			displayText(""+game.UT.woodcuttingPower.getTotalText(),g,WOODCUTTINGMENUX+15,WOODCUTTINGMENUY+10);
-			displayText(""+getSeconds(CHOPBASEINTERVAL-game.UT.woodcuttingSpeed.getTotal())+" sec delay",g,WOODCUTTINGMENUX+15,WOODCUTTINGMENUY+20);
+			displayText(""+getSeconds(Math.max(CHOPBASEINTERVAL-game.UT.woodcuttingSpeed.getTotal(),20))+" sec delay",g,WOODCUTTINGMENUX+15,WOODCUTTINGMENUY+20);
 			displayText(""+getPercent(game.UT.quickChopChance.getTotal())+"%",g,WOODCUTTINGMENUX+15,WOODCUTTINGMENUY+30);
 			displayText(""+getPercent(game.UT.powerChopChance.getTotal())+"%",g,WOODCUTTINGMENUX+15,WOODCUTTINGMENUY+40);
 		}
@@ -232,10 +282,6 @@ public class WoodcuttingScreen extends Screen{
 			chopIntervalCounter = (int) (Math.max(CHOPBASEINTERVAL-game.UT.woodcuttingSpeed.getTotal(),20));
 			chopping.setFrameCounter(0);
 		}
-		if (game.PD.getExp(page_ID.WOODCUTTING) >= expfornextlevel){
-			game.PD.incrementLevel(page_ID.WOODCUTTING);
-			expfornextlevel = game.PD.getNextLevelReq(page_ID.WOODCUTTING);
-		}
 		drawOnScreenItems(g);
 		displayExpBar(g, 228*Game.SCREENSCALE, 132*Game.SCREENSCALE, expfornextlevel, page_ID.WOODCUTTING);
 		
@@ -249,20 +295,26 @@ public class WoodcuttingScreen extends Screen{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				selectedTree = selectedTree.getPrev();
+				game.PD.treeSelected = selectedTree;
 				}
 			});
 		treeLeft.setBounds(124*Game.SCREENSCALE,30*Game.SCREENSCALE,12*Game.SCREENSCALE,14*Game.SCREENSCALE);
 		treeLeft.setContentAreaFilled(false);
+		treeLeft.setBorderPainted(false);
+		treeLeft.setFocusPainted(false);
 		
 		treeRight = new JButton();
 		treeRight.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				selectedTree = selectedTree.getNext();
+				game.PD.treeSelected = selectedTree;
 				}
 			});
 		treeRight.setBounds(154*Game.SCREENSCALE,30*Game.SCREENSCALE,12*Game.SCREENSCALE,14*Game.SCREENSCALE);
 		treeRight.setContentAreaFilled(false);
+		treeRight.setBorderPainted(false);
+		treeRight.setFocusPainted(false);
 		
 		upgradePage = new JButton();
 		upgradePage.addActionListener(new ActionListener() {
@@ -285,6 +337,8 @@ public class WoodcuttingScreen extends Screen{
 			});
 		upgradePage.setBounds((WOODCUTTINGMENUX+3)*Game.SCREENSCALE,(WOODCUTTINGMENUY+79)*Game.SCREENSCALE,31*Game.SCREENSCALE,10*Game.SCREENSCALE);
 		upgradePage.setContentAreaFilled(false);
+		upgradePage.setBorderPainted(false);
+		upgradePage.setFocusPainted(false);
 		
 		statPage = new JButton();
 		statPage.addActionListener(new ActionListener() {
@@ -302,6 +356,8 @@ public class WoodcuttingScreen extends Screen{
 			});
 		statPage.setBounds((WOODCUTTINGMENUX+35)*Game.SCREENSCALE,(WOODCUTTINGMENUY+79)*Game.SCREENSCALE,31*Game.SCREENSCALE,10*Game.SCREENSCALE);
 		statPage.setContentAreaFilled(false);
+		statPage.setBorderPainted(false);
+		statPage.setFocusPainted(false);
 		
 		woodcuttingPowerSelect = new JButton();
 		woodcuttingPowerSelect.addActionListener(new ActionListener() {
@@ -312,6 +368,8 @@ public class WoodcuttingScreen extends Screen{
 			});
 		woodcuttingPowerSelect.setBounds((WOODCUTTINGMENUX+14)*Game.SCREENSCALE,(WOODCUTTINGMENUY+4)*Game.SCREENSCALE,16*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		woodcuttingPowerSelect.setContentAreaFilled(false);
+		woodcuttingPowerSelect.setBorderPainted(false);
+		woodcuttingPowerSelect.setFocusPainted(false);
 		
 		woodcuttingSpeedSelect = new JButton();
 		woodcuttingSpeedSelect.addActionListener(new ActionListener() {
@@ -322,6 +380,8 @@ public class WoodcuttingScreen extends Screen{
 			});
 		woodcuttingSpeedSelect.setBounds((WOODCUTTINGMENUX+33)*Game.SCREENSCALE,(WOODCUTTINGMENUY+4)*Game.SCREENSCALE,16*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		woodcuttingSpeedSelect.setContentAreaFilled(false);
+		woodcuttingSpeedSelect.setBorderPainted(false);
+		woodcuttingSpeedSelect.setFocusPainted(false);
 		
 		quickChopSelect = new JButton();
 		quickChopSelect.addActionListener(new ActionListener() {
@@ -332,6 +392,8 @@ public class WoodcuttingScreen extends Screen{
 			});
 		quickChopSelect.setBounds((WOODCUTTINGMENUX+52)*Game.SCREENSCALE,(WOODCUTTINGMENUY+4)*Game.SCREENSCALE,16*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		quickChopSelect.setContentAreaFilled(false);
+		quickChopSelect.setBorderPainted(false);
+		quickChopSelect.setFocusPainted(false);
 
 		powerChopSelect = new JButton();
 		powerChopSelect.addActionListener(new ActionListener() {
@@ -342,6 +404,8 @@ public class WoodcuttingScreen extends Screen{
 			});
 		powerChopSelect.setBounds((WOODCUTTINGMENUX+71)*Game.SCREENSCALE,(WOODCUTTINGMENUY+4)*Game.SCREENSCALE,16*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		powerChopSelect.setContentAreaFilled(false);
+		powerChopSelect.setBorderPainted(false);
+		powerChopSelect.setFocusPainted(false);
 		
 		statUpgrade = new JButton();
 		statUpgrade.addActionListener(new ActionListener() {
@@ -352,6 +416,8 @@ public class WoodcuttingScreen extends Screen{
 			});
 		statUpgrade.setBounds((WOODCUTTINGMENUX+64)*Game.SCREENSCALE,(WOODCUTTINGMENUY+60)*Game.SCREENSCALE,32*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		statUpgrade.setContentAreaFilled(false);
+		statUpgrade.setBorderPainted(false);
+		statUpgrade.setFocusPainted(false);
 		
 	}
 }

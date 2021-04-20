@@ -4,12 +4,14 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Random;
 
 import javax.swing.JButton;
 
+import Data.Items.Item;
 import Data.UpgradeTracker.Upgrade;
 import main.Game;
 import resources.Animation;
@@ -25,14 +27,14 @@ public class FishingScreen extends Screen{
 		POWER,SPEED,FRENZYPOWER,FRENZYDURATION,STATS;
 	}
 	public enum Fish {
-		FISH1(31,100,5,1),FISH2(32,200,15,11),FISH3(33,600,60,21),FISH4(34,2400,300,31),FISH5(35,12000,1800,41),FISH6(36,72000,12600,51);
+		FISH1(31,100,new BigInteger("5"),1),FISH2(32,200,new BigInteger("15"),11),FISH3(33,600,new BigInteger("60"),21),FISH4(34,2400,new BigInteger("300"),31),FISH5(35,12000,new BigInteger("1800"),41),FISH6(36,72000,new BigInteger("12600"),51);
 		private final int ID;
 		private final int durability;
-		private final double exp;
+		private final BigInteger exp;
 		private final int unlockLevel;
 
 		
-		private Fish(int ID,int durability,double exp,int unlockLevel) {
+		private Fish(int ID,int durability,BigInteger exp,int unlockLevel) {
 			this.ID = ID;
 			this.durability = durability;
 			this.exp = exp;
@@ -54,11 +56,11 @@ public class FishingScreen extends Screen{
 		
 	}
 
-	private final int FISHINGMENUX = 186;
-	private final int FISHINGMENUY = 30;
-	private final int CASTBASEINTERVAL = 300;
+	private final static int FISHINGMENUX = 186;
+	private final static int FISHINGMENUY = 30;
+	private final static int CASTBASEINTERVAL = 300;
 	private int castIntervalCounter;
-	private long expfornextlevel;
+	private BigInteger expfornextlevel;
 	
 	private stat_tab statTab;
 	private Fish selectedFish;
@@ -80,7 +82,7 @@ public class FishingScreen extends Screen{
 		defineButtons();
 		fishingButtons = new LinkedList<JButton>();
 		statTab = stat_tab.POWER;
-		selectedFish=Fish.FISH1;
+		selectedFish=game.PD.fishSelected;
 		fishingButtons.add(fishLeft);
 		fishingButtons.add(fishRight);
 		fishingButtons.add(statPage);
@@ -118,20 +120,60 @@ public class FishingScreen extends Screen{
 	private Upgrade findSelected() {
 		switch(statTab) {
 		case POWER:
-			return game.UT.woodcuttingPage0;
+			return game.UT.fishingPage0;
 		case SPEED:
-			return game.UT.woodcuttingPage1;
+			return game.UT.fishingPage1;
 		case FRENZYPOWER:
-			return game.UT.woodcuttingPage2;
+			return game.UT.fishingPage2;
 		case FRENZYDURATION:
-			return game.UT.woodcuttingPage3;
+			return game.UT.fishingPage3;
 		case STATS:
 			break;
 			}
 		return null;
 	}
 	
-	private void catchFish() {
+	public static Item[] simulateCatchFish(Game game, long years, long days, long hours, long minutes) {
+		game.PD.saveToggle = false;
+		Item[] itemsGained = new Item[] {new Item(game.PD.fishSelected.ID), new Item(30)};
+		FishingScreen page = new FishingScreen(game);
+		double actionsPerMinute = 60/getSeconds(Math.max(CASTBASEINTERVAL-game.UT.miningSpeed.getTotal(),20));
+		double actionsPerHour = actionsPerMinute*60;
+		double actionsPerDay = actionsPerHour*24;
+		long actionsPerYear = (long)(actionsPerDay*365);
+		for (int i = 0; i < minutes; i++) {
+			for (int j = 0; j < actionsPerMinute; j++) {
+				Item[] gains = page.catchFish();
+				itemsGained[0].Increase(gains[0].Quanity());
+				itemsGained[1].Increase(gains[1].Quanity());
+			}
+		}
+		for (int i = 0; i < hours; i++) {
+			for (int j = 0; j < actionsPerHour; j++) {
+				Item[] gains = page.catchFish();
+				itemsGained[0].Increase(gains[0].Quanity());
+				itemsGained[1].Increase(gains[1].Quanity());
+			}
+		}
+		for (int i = 0; i < days; i++) {
+			for (int j = 0; j < actionsPerDay; j++) {
+				Item[] gains = page.catchFish();
+				itemsGained[0].Increase(gains[0].Quanity());
+				itemsGained[1].Increase(gains[1].Quanity());
+			}
+		}
+		for (int i = 0; i < years; i++) {
+			for (long j = 0; j < actionsPerYear; j++) {
+				Item[] gains = page.catchFish();
+				itemsGained[0].Increase(gains[0].Quanity());
+				itemsGained[1].Increase(gains[1].Quanity());
+			}
+		}
+		game.PD.saveToggle = true;
+		return itemsGained;
+	}
+	
+	private Item[] catchFish() {
 		Random rand = new Random();
 		int fishGained = 0;
 		double a = selectedFish.durability;
@@ -146,16 +188,31 @@ public class FishingScreen extends Screen{
 		}
 		else {
 			frenzyMeter += game.UT.frenzyPower.getTotal();
+			if (frenzyMeter >= 100*(frenzyLevel+1)) {
+				frenzyMeter -= 100*(frenzyLevel+1);
+				game.PD.frenzyMeter = frenzyMeter;
+				frenzyLevel++;
+				game.PD.frenzyLevel = frenzyLevel;
+			}
 			game.PD.frenzyMeter = frenzyMeter;
 		}
 	    game.inventory.itemList[30].Increase(seaweedGained);
 		game.inventory.itemList[selectedFish.ID].Increase(fishGained);
-		game.PD.addExp(Screen.page_ID.FISHING, selectedFish.exp*fishGained+seaweedGained);
+		game.PD.addExp(Screen.page_ID.FISHING, selectedFish.exp.multiply(new BigInteger(""+fishGained)).add(new BigInteger(""+seaweedGained)));
 		
 		onScreenItems.add(new ItemGraphic(game.inventory.itemList[30], seaweedGained, 50, rand.nextInt(16)+123,rand.nextInt(9)+70,1));
 		if (fishGained > 0) {
 			onScreenItems.add(new ItemGraphic(game.inventory.itemList[selectedFish.ID], fishGained, 50, rand.nextInt(16)+145,rand.nextInt(9)+70,1));
 		}
+		Item fishTotal = new Item(selectedFish.ID); fishTotal.Increase(fishGained);
+		Item seaweedTotal = new Item(30); seaweedTotal.Increase(seaweedGained);
+		
+		if (game.PD.getExp(page_ID.FISHING).compareTo(expfornextlevel) == 1){
+			game.PD.incrementLevel(page_ID.FISHING);
+			expfornextlevel = game.PD.getNextLevelReq(page_ID.FISHING);
+		}
+		
+		return new Item[] {fishTotal, seaweedTotal};
 	}
 	
 	
@@ -193,7 +250,7 @@ public class FishingScreen extends Screen{
 				displayText("MAX",g,FISHINGMENUX+7,FISHINGMENUY+48);
 			}
 			else {
-				displayCost(game.inventory.itemList[findSelected().getCostID()].Quanity(),findSelected().getCostQuanity(),g,FISHINGMENUX+7,FISHINGMENUY+48);
+				displayCost(game.inventory.itemList[findSelected().getCostID()].Quanity(),findSelected().getCostQuanity(),game.inventory.itemList[findSelected().getCostID()],g,FISHINGMENUX+7,FISHINGMENUY+48);
 			}
 			if (findSelected().getCurrentLevel() == 0) {
 				g.drawImage(Images.fishingUIicons[2],(FISHINGMENUX+74)*Game.SCREENSCALE,(FISHINGMENUY+63)*Game.SCREENSCALE,32,32,null);
@@ -213,7 +270,7 @@ public class FishingScreen extends Screen{
 			displayText("frenzy power",g,FISHINGMENUX+15,FISHINGMENUY+26);
 			displayText("frenzy duration",g,FISHINGMENUX+15,FISHINGMENUY+36);
 			displayText(""+game.UT.fishingPower.getTotalText(),g,FISHINGMENUX+15,FISHINGMENUY+10);
-			displayText(""+getSeconds(CASTBASEINTERVAL-game.UT.fishingSpeed.getTotal())+" sec delay",g,FISHINGMENUX+15,FISHINGMENUY+20);
+			displayText(""+getSeconds(Math.max(CASTBASEINTERVAL-game.UT.fishingSpeed.getTotal(),20))+" sec delay",g,FISHINGMENUX+15,FISHINGMENUY+20);
 			displayText(""+game.UT.frenzyPower.getTotal(),g,FISHINGMENUX+15,FISHINGMENUY+30);
 			displayText(""+getSeconds(game.UT.frenzyDuration.getTotal())+"sec delay",g,FISHINGMENUX+15,FISHINGMENUY+40);
 		}
@@ -229,18 +286,8 @@ public class FishingScreen extends Screen{
 		displayText(""+game.PD.getExp(Screen.page_ID.FISHING),g, 10, 136);
 		if (castIntervalCounter == 0) {
 			catchFish();
-			if (frenzyMeter >= 100*(frenzyLevel+1)) {
-				frenzyMeter -= 100*(frenzyLevel+1);
-				game.PD.frenzyMeter = frenzyMeter;
-				frenzyLevel++;
-				game.PD.frenzyLevel = frenzyLevel;
-			}
 			castIntervalCounter = (int) (Math.max(CASTBASEINTERVAL-game.UT.fishingSpeed.getTotal(),20));
 			casting.setFrameCounter(0);
-		}
-		if (game.PD.getExp(page_ID.FISHING) >= expfornextlevel){
-			game.PD.incrementLevel(page_ID.FISHING);
-			expfornextlevel = game.PD.getNextLevelReq(page_ID.FISHING);
 		}
 		drawOnScreenItems(g);
 		displayExpBar(g, 228*Game.SCREENSCALE, 132*Game.SCREENSCALE, expfornextlevel, page_ID.FISHING);
@@ -262,20 +309,26 @@ public class FishingScreen extends Screen{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				selectedFish = selectedFish.getPrev();
+				game.PD.fishSelected = selectedFish;
 				}
 			});
 		fishLeft.setBounds(124*Game.SCREENSCALE,30*Game.SCREENSCALE,12*Game.SCREENSCALE,14*Game.SCREENSCALE);
 		fishLeft.setContentAreaFilled(false);
+		fishLeft.setBorderPainted(false);
+		fishLeft.setFocusPainted(false);
 		
 		fishRight = new JButton();
 		fishRight.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				selectedFish = selectedFish.getNext();
+				game.PD.fishSelected = selectedFish;
 				}
 			});
 		fishRight.setBounds(154*Game.SCREENSCALE,30*Game.SCREENSCALE,12*Game.SCREENSCALE,14*Game.SCREENSCALE);
 		fishRight.setContentAreaFilled(false);
+		fishRight.setBorderPainted(false);
+		fishRight.setFocusPainted(false);
 		
 		upgradePage = new JButton();
 		upgradePage.addActionListener(new ActionListener() {
@@ -299,6 +352,8 @@ public class FishingScreen extends Screen{
 			});
 		upgradePage.setBounds((FISHINGMENUX+3)*Game.SCREENSCALE,(FISHINGMENUY+79)*Game.SCREENSCALE,31*Game.SCREENSCALE,10*Game.SCREENSCALE);
 		upgradePage.setContentAreaFilled(false);
+		upgradePage.setBorderPainted(false);
+		upgradePage.setFocusPainted(false);
 		
 		statPage = new JButton();
 		statPage.addActionListener(new ActionListener() {
@@ -317,6 +372,8 @@ public class FishingScreen extends Screen{
 			});
 		statPage.setBounds((FISHINGMENUX+35)*Game.SCREENSCALE,(FISHINGMENUY+79)*Game.SCREENSCALE,31*Game.SCREENSCALE,10*Game.SCREENSCALE);
 		statPage.setContentAreaFilled(false);
+		statPage.setBorderPainted(false);
+		statPage.setFocusPainted(false);
 		
 		fishingPowerSelect = new JButton();
 		fishingPowerSelect.addActionListener(new ActionListener() {
@@ -327,6 +384,8 @@ public class FishingScreen extends Screen{
 			});
 		fishingPowerSelect.setBounds((FISHINGMENUX+14)*Game.SCREENSCALE,(FISHINGMENUY+4)*Game.SCREENSCALE,16*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		fishingPowerSelect.setContentAreaFilled(false);
+		fishingPowerSelect.setBorderPainted(false);
+		fishingPowerSelect.setFocusPainted(false);
 		
 		fishingSpeedSelect = new JButton();
 		fishingSpeedSelect.addActionListener(new ActionListener() {
@@ -337,6 +396,8 @@ public class FishingScreen extends Screen{
 			});
 		fishingSpeedSelect.setBounds((FISHINGMENUX+33)*Game.SCREENSCALE,(FISHINGMENUY+4)*Game.SCREENSCALE,16*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		fishingSpeedSelect.setContentAreaFilled(false);
+		fishingSpeedSelect.setBorderPainted(false);
+		fishingSpeedSelect.setFocusPainted(false);
 		
 		frenzyPowerSelect = new JButton();
 		frenzyPowerSelect.addActionListener(new ActionListener() {
@@ -347,6 +408,8 @@ public class FishingScreen extends Screen{
 			});
 		frenzyPowerSelect.setBounds((FISHINGMENUX+52)*Game.SCREENSCALE,(FISHINGMENUY+4)*Game.SCREENSCALE,16*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		frenzyPowerSelect.setContentAreaFilled(false);
+		frenzyPowerSelect.setBorderPainted(false);
+		frenzyPowerSelect.setFocusPainted(false);
 
 		frenzyDurationSelect = new JButton();
 		frenzyDurationSelect.addActionListener(new ActionListener() {
@@ -357,6 +420,8 @@ public class FishingScreen extends Screen{
 			});
 		frenzyDurationSelect.setBounds((FISHINGMENUX+71)*Game.SCREENSCALE,(FISHINGMENUY+4)*Game.SCREENSCALE,16*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		frenzyDurationSelect.setContentAreaFilled(false);
+		frenzyDurationSelect.setBorderPainted(false);
+		frenzyDurationSelect.setFocusPainted(false);
 		
 		statUpgrade = new JButton();
 		statUpgrade.addActionListener(new ActionListener() {
@@ -367,20 +432,26 @@ public class FishingScreen extends Screen{
 			});
 		statUpgrade.setBounds((FISHINGMENUX+64)*Game.SCREENSCALE,(FISHINGMENUY+60)*Game.SCREENSCALE,32*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		statUpgrade.setContentAreaFilled(false);
+		statUpgrade.setBorderPainted(false);
+		statUpgrade.setFocusPainted(false);
 		
 		
 		frenzyActivate = new JButton();
 		frenzyActivate.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				frenzyTimer = (int) game.UT.frenzyDuration.getTotal();
-				activeFrenzyLevel = frenzyLevel+1;
-				frenzyLevel = 0;
-				frenzyMeter = 0;
+				if (frenzyLevel >= 1) {
+					frenzyTimer = (int) game.UT.frenzyDuration.getTotal();
+					activeFrenzyLevel = frenzyLevel+1;
+					frenzyLevel = 0;
+					frenzyMeter = 0;
+					}
 				}
 			});
 		frenzyActivate.setBounds(3*Game.SCREENSCALE,37*Game.SCREENSCALE,16*Game.SCREENSCALE,16*Game.SCREENSCALE);
 		frenzyActivate.setContentAreaFilled(false);
+		frenzyActivate.setBorderPainted(false);
+		frenzyActivate.setFocusPainted(false);
 	}
 	
 }

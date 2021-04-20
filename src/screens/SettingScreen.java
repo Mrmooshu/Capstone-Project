@@ -59,6 +59,8 @@ public class SettingScreen extends Screen{
 		});
 		quitButton.setBounds((125)*Game.SCREENSCALE,(125)*Game.SCREENSCALE, 42*Game.SCREENSCALE, 22*Game.SCREENSCALE);
 		quitButton.setContentAreaFilled(false);
+		quitButton.setBorderPainted(false);
+		quitButton.setFocusPainted(false);
 		
 		resetDataButton = new JButton("reset data");
 		resetDataButton.addActionListener(new ActionListener(){
@@ -69,7 +71,8 @@ public class SettingScreen extends Screen{
 		});
 		resetDataButton.setBounds((125)*Game.SCREENSCALE,(100)*Game.SCREENSCALE, 42*Game.SCREENSCALE, 22*Game.SCREENSCALE);
 		resetDataButton.setContentAreaFilled(false);
-		
+		resetDataButton.setBorderPainted(false);
+		resetDataButton.setFocusPainted(false);
 		
 		addItemByID = new JButton("addItem");
 		addItemByID.addActionListener(new ActionListener(){
