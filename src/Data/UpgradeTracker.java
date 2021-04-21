@@ -148,7 +148,7 @@ public class UpgradeTracker {
 		miningPowerUpgrades = new Upgrade[] {
 				miningPowerBase = new Upgrade("miningpower",1,bonus_type.BASE, PlayerData.MINIGMAX),
 				labMining0 = new Upgrade("miningpower",miningPowerItemData[0],miningPowerCostData[0],.05,bonus_type.ADDITIVE),
-				miningPage0 = new Upgrade("miningpower",miningPowerItemData[1],miningPowerCostData[1],.05,bonus_type.ADDITIVE)
+				miningPage0 = new Upgrade("miningpower",miningPowerItemData[1],miningPowerCostData[1],.01,bonus_type.MULTIPLICATIVE)
 		};
 
 		int[][] miningSpeedItemData = loadItemData("src/Data/UpgradeData/mining/miningSpeedItemLevel.csv");
@@ -167,8 +167,8 @@ public class UpgradeTracker {
 		int[][] miningCritModItemData = loadItemData("src/Data/UpgradeData/mining/miningCritModItemLevel.csv");
 		BigInteger[][] miningCritModCostData = loadQuanityData("src/Data/UpgradeData/mining/miningCritModCostLevel.csv");
 		miningCritModUpgrades = new Upgrade[] {
-				labMining2 = new Upgrade("miningCritMod",miningCritModItemData[0],miningCritModCostData[0],.05,bonus_type.BASE),
-				miningPage3 = new Upgrade("miningCritMod",miningCritModItemData[1],miningCritModCostData[1],.05,bonus_type.BASE)
+				labMining2 = new Upgrade("miningCritMod",miningCritModItemData[0],miningCritModCostData[0],.01,bonus_type.BASE),
+				miningPage3 = new Upgrade("miningCritMod",miningCritModItemData[1],miningCritModCostData[1],.01,bonus_type.BASE)
 		};
 		
 //		woodcutting
@@ -177,7 +177,7 @@ public class UpgradeTracker {
 		woodcuttingPowerUpgrades = new Upgrade[] {
 				woodcuttingPowerBase = new Upgrade("woodcuttingpower",1,bonus_type.BASE,PlayerData.WOODCUTTINGMAX),
 				labWoodcutting0 = new Upgrade("woodcuttingpower",woodcuttingPowerItemData[0],woodcuttingPowerCostData[0],.05,bonus_type.ADDITIVE),
-				woodcuttingPage0 = new Upgrade("woodcuttingpower",woodcuttingPowerItemData[1],woodcuttingPowerCostData[1],.05,bonus_type.BASE)
+				woodcuttingPage0 = new Upgrade("woodcuttingpower",woodcuttingPowerItemData[1],woodcuttingPowerCostData[1],.01,bonus_type.MULTIPLICATIVE)
 		};
 		
 		int[][] woodcuttingSpeedItemData = loadItemData("src/Data/UpgradeData/woodcutting/woodcuttingSpeedItemLevel.csv");
@@ -189,16 +189,16 @@ public class UpgradeTracker {
 		int[][] quickChopChanceItemData = loadItemData("src/Data/UpgradeData/woodcutting/quickChopChanceItemLevel.csv");
 		BigInteger[][] quickChopChanceCostData = loadQuanityData("src/Data/UpgradeData/woodcutting/quickChopChanceCostLevel.csv");
 		quickChopChanceUpgrades = new Upgrade[] {
-				labWoodcutting1 = new Upgrade("quickChopChance",quickChopChanceItemData[0],quickChopChanceCostData[0],.05,bonus_type.BASE),
-				woodcuttingPage2 = new Upgrade("quickChopChance",quickChopChanceItemData[1],quickChopChanceCostData[1],.05,bonus_type.BASE)
+				labWoodcutting1 = new Upgrade("quickChopChance",quickChopChanceItemData[0],quickChopChanceCostData[0],.01,bonus_type.BASE),
+				woodcuttingPage2 = new Upgrade("quickChopChance",quickChopChanceItemData[1],quickChopChanceCostData[1],.01,bonus_type.BASE)
 
 		};
 		
 		int[][] powerChopChanceItemData = loadItemData("src/Data/UpgradeData/woodcutting/powerChopChanceItemLevel.csv");
 		BigInteger[][] powerChopChanceCostData = loadQuanityData("src/Data/UpgradeData/woodcutting/powerChopChanceCostLevel.csv");
 		powerChopChanceUpgrades = new Upgrade[] {
-				labWoodcutting2 = new Upgrade("powerChopChance",powerChopChanceItemData[0],powerChopChanceCostData[0],.05,bonus_type.BASE),
-				woodcuttingPage3 = new Upgrade("powerChopChance",powerChopChanceItemData[1],powerChopChanceCostData[1],.05,bonus_type.BASE)
+				labWoodcutting2 = new Upgrade("powerChopChance",powerChopChanceItemData[0],powerChopChanceCostData[0],.01,bonus_type.BASE),
+				woodcuttingPage3 = new Upgrade("powerChopChance",powerChopChanceItemData[1],powerChopChanceCostData[1],.01,bonus_type.BASE)
 
 		};
 		
@@ -208,7 +208,7 @@ public class UpgradeTracker {
 		fishingPowerUpgrades = new Upgrade[] {
 				fishingPowerBase = new Upgrade("fishingPower",1,bonus_type.BASE,PlayerData.FISHINGMAX),
 				labFishing0 = new Upgrade("fishingpower",fishingPowerItemData[0],fishingPowerCostData[0],.05,bonus_type.ADDITIVE),
-				fishingPage0 = new Upgrade("fishingpower",fishingPowerItemData[1],fishingPowerCostData[1],.05,bonus_type.BASE)
+				fishingPage0 = new Upgrade("fishingpower",fishingPowerItemData[1],fishingPowerCostData[1],.01,bonus_type.MULTIPLICATIVE)
 		};
 		
 		int[][] fishingSpeedItemData = loadItemData("src/Data/UpgradeData/fishing/fishingSpeedItemLevel.csv");
@@ -221,8 +221,8 @@ public class UpgradeTracker {
 		int[][] frenzyPowerItemData = loadItemData("src/Data/UpgradeData/fishing/frenzyPowerItemLevel.csv");
 		BigInteger[][] frenzyPowerCostData = loadQuanityData("src/Data/UpgradeData/fishing/frenzyPowerCostLevel.csv");
 		frenzyPowerUpgrades = new Upgrade[] {
-				labFishing1 = new Upgrade("frenzyChance",frenzyPowerItemData[0],frenzyPowerCostData[0],.05,bonus_type.ADDITIVE),
-				fishingPage2 = new Upgrade("fishingspeed",frenzyPowerItemData[1],frenzyPowerCostData[1],1,bonus_type.BASE)
+				labFishing1 = new Upgrade("frenzyPower",frenzyPowerItemData[0],frenzyPowerCostData[0],.05,bonus_type.ADDITIVE),
+				fishingPage2 = new Upgrade("frenzyPower",frenzyPowerItemData[1],frenzyPowerCostData[1],.01,bonus_type.MULTIPLICATIVE)
 
 		};
 		
@@ -230,7 +230,7 @@ public class UpgradeTracker {
 		BigInteger[][] frenzyDurationCostData = loadQuanityData("src/Data/UpgradeData/fishing/frenzyDurationCostLevel.csv");
 		frenzyDurationUpgrades = new Upgrade[] {
 				labFishing2 = new Upgrade("frenzyDuration",frenzyDurationItemData[0],frenzyDurationCostData[0],.05,bonus_type.ADDITIVE),
-				fishingPage3 = new Upgrade("fishingspeed",frenzyDurationItemData[1],frenzyDurationCostData[1],1,bonus_type.BASE)
+				fishingPage3 = new Upgrade("frenzyDuration",frenzyDurationItemData[1],frenzyDurationCostData[1],.01,bonus_type.MULTIPLICATIVE)
 
 		};
 
@@ -246,21 +246,25 @@ public class UpgradeTracker {
 	
 	public void initialize() {
 //		stats
-		miningPower = new Stat("Mining Power", game.PD.getLevel(page_ID.MINING), miningPowerUpgrades);
-		miningSpeed = new Stat("Mining Speed", 300, miningSpeedUpgrades);
-		miningCritChance = new Stat("Mining Crit %", 3.0, miningCritChanceUpgrades);
-		miningCritMod = new Stat("Mining Crit Power", 10.1, miningCritModUpgrades);
+		miningPower = new Stat("Mining Power", 0, miningPowerUpgrades);
+		miningSpeed = new Stat("Mining Speed", 0, miningSpeedUpgrades);
+		miningCritChance = new Stat("Mining Crit %", 0, miningCritChanceUpgrades);
+		miningCritMod = new Stat("Mining Crit Power", 1, miningCritModUpgrades);
 
-		woodcuttingPower = new Stat("Woodcutting Power", game.PD.getLevel(page_ID.WOODCUTTING), woodcuttingPowerUpgrades);
-		woodcuttingSpeed = new Stat("Woodcutting Speed", 300, woodcuttingSpeedUpgrades);
+		woodcuttingPower = new Stat("Woodcutting Power", 0, woodcuttingPowerUpgrades);
+		woodcuttingSpeed = new Stat("Woodcutting Speed", 200, woodcuttingSpeedUpgrades);
 		quickChopChance = new Stat("Quick Chop Chance", 1, quickChopChanceUpgrades);
 		powerChopChance = new Stat("Power Chop Chance", 0, powerChopChanceUpgrades);
 
 		
-		fishingPower = new Stat("Fishing Power", game.PD.getLevel(page_ID.FISHING), fishingPowerUpgrades);
-		fishingSpeed = new Stat("Fishing Speed", 300, fishingSpeedUpgrades);
+		fishingPower = new Stat("Fishing Power", 0, fishingPowerUpgrades);
+		fishingSpeed = new Stat("Fishing Speed", 0, fishingSpeedUpgrades);
 		frenzyPower = new Stat("Frenzy Power", 5, frenzyPowerUpgrades);
 		frenzyDuration = new Stat("Frenzy Duration", 300, frenzyDurationUpgrades);
+//		other
+		miningPowerBase.setCurrentLevel(game.PD.getLevel(page_ID.MINING));
+		woodcuttingPowerBase.setCurrentLevel(game.PD.getLevel(page_ID.WOODCUTTING));
+		fishingPowerBase.setCurrentLevel(game.PD.getLevel(page_ID.FISHING));
 	}
 	
 	private int[][] loadItemData(String IDFile) {

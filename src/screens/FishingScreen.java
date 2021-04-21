@@ -169,6 +169,9 @@ public class FishingScreen extends Screen{
 				itemsGained[1].Increase(gains[1].Quanity());
 			}
 		}
+		while (game.PD.getExp(page_ID.FISHING).compareTo(game.PD.getNextLevelReq(page_ID.FISHING)) == 1) {
+			game.PD.incrementLevel(page_ID.FISHING);
+		}
 		game.PD.saveToggle = true;
 		return itemsGained;
 	}
@@ -178,6 +181,10 @@ public class FishingScreen extends Screen{
 		int fishGained = 0;
 		double a = selectedFish.durability;
 		double b = game.UT.fishingPower.getTotal();
+		while ( b >= a) {
+			b = b-a;
+			fishGained++;
+		}
 		if (rand.nextInt(selectedFish.durability) <= b) {
 			fishGained++;
 		}
@@ -200,10 +207,13 @@ public class FishingScreen extends Screen{
 		game.inventory.itemList[selectedFish.ID].Increase(fishGained);
 		game.PD.addExp(Screen.page_ID.FISHING, selectedFish.exp.multiply(new BigInteger(""+fishGained)).add(new BigInteger(""+seaweedGained)));
 		
-		onScreenItems.add(new ItemGraphic(game.inventory.itemList[30], seaweedGained, 50, rand.nextInt(16)+123,rand.nextInt(9)+70,1));
-		if (fishGained > 0) {
-			onScreenItems.add(new ItemGraphic(game.inventory.itemList[selectedFish.ID], fishGained, 50, rand.nextInt(16)+145,rand.nextInt(9)+70,1));
+		if (!game.PD.simulating) {
+			onScreenItems.add(new ItemGraphic(game.inventory.itemList[30], seaweedGained, 50, rand.nextInt(16)+123,rand.nextInt(9)+70,1));
+			if (fishGained > 0) {
+				onScreenItems.add(new ItemGraphic(game.inventory.itemList[selectedFish.ID], fishGained, 50, rand.nextInt(16)+145,rand.nextInt(9)+70,1));
+			}
 		}
+
 		Item fishTotal = new Item(selectedFish.ID); fishTotal.Increase(fishGained);
 		Item seaweedTotal = new Item(30); seaweedTotal.Increase(seaweedGained);
 		
@@ -261,10 +271,10 @@ public class FishingScreen extends Screen{
 		}
 		else {
 			displayItems(Arrays.copyOfRange(game.inventory.itemList,30,37), g, FISHINGMENUX+67, FISHINGMENUY+4);
-			g.drawImage(Images.staticons[4],(FISHINGMENUX+3)*Game.SCREENSCALE,(FISHINGMENUY+4)*Game.SCREENSCALE,32,32,null);
-			g.drawImage(Images.staticons[5],(FISHINGMENUX+3)*Game.SCREENSCALE,(FISHINGMENUY+14)*Game.SCREENSCALE,32,32,null);
-			g.drawImage(Images.staticons[6],(FISHINGMENUX+3)*Game.SCREENSCALE,(FISHINGMENUY+24)*Game.SCREENSCALE,32,32,null);
-			g.drawImage(Images.staticons[7],(FISHINGMENUX+3)*Game.SCREENSCALE,(FISHINGMENUY+34)*Game.SCREENSCALE,32,32,null);
+			g.drawImage(Images.staticons[8],(FISHINGMENUX+3)*Game.SCREENSCALE,(FISHINGMENUY+4)*Game.SCREENSCALE,32,32,null);
+			g.drawImage(Images.staticons[9],(FISHINGMENUX+3)*Game.SCREENSCALE,(FISHINGMENUY+14)*Game.SCREENSCALE,32,32,null);
+			g.drawImage(Images.staticons[10],(FISHINGMENUX+3)*Game.SCREENSCALE,(FISHINGMENUY+24)*Game.SCREENSCALE,32,32,null);
+			g.drawImage(Images.staticons[11],(FISHINGMENUX+3)*Game.SCREENSCALE,(FISHINGMENUY+34)*Game.SCREENSCALE,32,32,null);
 			displayText("fishing power",g,FISHINGMENUX+15,FISHINGMENUY+6);
 			displayText("fishing speed",g,FISHINGMENUX+15,FISHINGMENUY+16);
 			displayText("frenzy power",g,FISHINGMENUX+15,FISHINGMENUY+26);
@@ -445,6 +455,9 @@ public class FishingScreen extends Screen{
 					activeFrenzyLevel = frenzyLevel+1;
 					frenzyLevel = 0;
 					frenzyMeter = 0;
+					game.PD.frenzyLevel = 0;
+					game.PD.frenzyMeter = 0;
+					game.PD.saveData();
 					}
 				}
 			});

@@ -42,7 +42,7 @@ public class Images {
 	public static BufferedImage[] woodcuttingcharacter,woodcuttingUIicons,woodcuttingUI,woodcuttingTrees,quickchopstacks;
 	public static BufferedImage[] fishingcharacter,fishingUIicons,fishingUI;
 	//animation frames
-	public static BufferedImage[] generator, handle, mininganimation, choppinganimation, fishinganimation;
+	public static BufferedImage[] generator, handle, mininganimation, choppinganimation, fishinganimation, quickchopanimation;
 	//image
 	public static BufferedImage headerUI;
 	
@@ -78,6 +78,7 @@ public class Images {
 		mininganimation = new BufferedImage[9];
 		choppinganimation = new BufferedImage[9];
 		fishinganimation = new BufferedImage[16];
+		quickchopanimation = new BufferedImage[10];
 		
 		try {
 			backgrounds[Screen.page_ID.LAB.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/lab_background.png"));
@@ -134,6 +135,7 @@ public class Images {
 			readSpriteSheet("/resources/Animations/miningAnimation.png", mininganimation, 48, 27);
 			readSpriteSheet("/resources/Animations/choppingAnimation.png", choppinganimation, 48, 31);
 			readSpriteSheet("/resources/Animations/fishingAnimation.png", fishinganimation, 48, 32);
+			readSpriteSheet("/resources/Animations/quickChopAnimation.png", quickchopanimation, 48, 31);
 			
 		}
 		catch (IOException e) {

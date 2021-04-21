@@ -5,7 +5,10 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
@@ -225,9 +228,9 @@ public class Screen {
 	}
 	
 	protected void displayExpBar(Graphics g,int x,int y,BigInteger expEnd,page_ID skill) {
-		BigInteger a = game.PD.getExp(skill);
-		BigInteger b = a.divide(expEnd);
-		int c = Integer.parseInt((b.multiply(new BigInteger("99"))).toString());
+		BigDecimal d = new BigDecimal(game.PD.getExp(skill)).divide(new BigDecimal(expEnd), 2, RoundingMode.HALF_UP);
+		float b = Float.parseFloat(d.toString());
+		int c = (int) (b*99);
 		g.setColor(Images.CYAN);
 		g.fillRect(x, y, c, 3*Game.SCREENSCALE);
 	}
@@ -242,7 +245,7 @@ public class Screen {
 	
 	protected void attemptUpgrade(Upgrade upgrade) {
 		if (upgrade.getCurrentLevel()==upgrade.getLevelMax()) {
-			System.out.print("max level");
+			System.out.println("max level");
 		}
 		else if (new BigInteger(""+upgrade.getCostQuanity()).compareTo(game.inventory.itemList[upgrade.getCostID()].Quanity()) == 0 || new BigInteger(""+upgrade.getCostQuanity()).compareTo(game.inventory.itemList[upgrade.getCostID()].Quanity()) == -1) {
 			game.inventory.itemList[upgrade.getCostID()].Decrease(upgrade.getCostQuanity());
@@ -250,7 +253,7 @@ public class Screen {
 			game.PD.saveData();
 		}
 		else {
-			System.out.print("cant afford");
+			System.out.println("cant afford");
 		}
 	}
 	
@@ -278,33 +281,33 @@ public class Screen {
 		zones.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.print("zones");
+				System.out.println("zones");
 				game.SM.changePage(new ZoneScreen(game));
 			}
 		});
 		skills.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.print("skills");
+				System.out.println("skills");
 			}
 		});
 		items.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.print("items");
+				System.out.println("items");
 				game.SM.changePage(new ItemScreen(game));
 			}
 		});
 		tasks.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.print("tasks");
+				System.out.println("tasks");
 			}
 		});
 		settings.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.print("settings");
+				System.out.println("settings");
 				game.SM.changePage(new SettingScreen(game));
 			}
 		});

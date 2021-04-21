@@ -33,6 +33,7 @@ public class PlayerData {
 	private int miningLvl,woodcuttingLvl,fishingLvl;
 	public static final int MINIGMAX=1000,WOODCUTTINGMAX=1000,FISHINGMAX=1000;
 	public boolean saveToggle = true;
+	public boolean simulating = false;
 	
 	public Item[] miningItems;
 	public Item[] woodcuttingItems;
@@ -66,18 +67,16 @@ public class PlayerData {
 
 	public void resetData() {
 		game.inventory=new Items();
+		game.PD = new PlayerData(game);
 		game.UT=new UpgradeTracker(game);
 		game.UT.initialize();
-		game.PD = new PlayerData(game);
 		saveData();
 	}
 	
 	
 	private void loadData() {
 //		load save data
-		if (saveToggle) {
 			try {
-
 				BufferedReader br = new BufferedReader(new FileReader(saveFile));
 //				exact time since when game last saved
 				lastTimePlayed = br.readLine();
@@ -89,6 +88,10 @@ public class PlayerData {
 				miningExp = new BigInteger(br.readLine());
 				woodcuttingExp = new BigInteger(br.readLine());
 				fishingExp = new BigInteger(br.readLine());
+//				level
+				miningLvl = Integer.parseInt(br.readLine());
+				woodcuttingLvl = Integer.parseInt(br.readLine());
+				fishingLvl = Integer.parseInt(br.readLine());
 //				other
 				quickChopStack = Integer.parseInt(br.readLine());
 				frenzyMeter = Integer.parseInt(br.readLine());
@@ -110,45 +113,51 @@ public class PlayerData {
 				lastTimePlayed = LocalDateTime.now().toString();
 				System.out.println("could not load data ");
 			}
-		}
 
 	}
 	
 	public void saveData() {
 //		save data
-		try {
-			lastTimePlayed = LocalDateTime.now().toString();
-			BufferedWriter bw = new BufferedWriter(new FileWriter(saveFile));
-//			exact time when game saves
-			bw.write(lastTimePlayed); bw.newLine();
-//			selections
-			bw.write(oreSelected.name()); bw.newLine();
-			bw.write(treeSelected.name()); bw.newLine();
-			bw.write(fishSelected.name()); bw.newLine();
-//			exp
-			bw.write(""+miningExp); bw.newLine();
-			bw.write(""+woodcuttingExp); bw.newLine();
-			bw.write(""+fishingExp); bw.newLine();
-//			other
-			bw.write(""+quickChopStack); bw.newLine();
-			bw.write(""+frenzyMeter); bw.newLine();
-			bw.write(""+frenzyLevel); bw.newLine();
-//			items
-			for (int i = 0; i < game.inventory.itemList.length; i++) {
-				bw.write(game.inventory.itemList[i].Quanity().toString()); bw.newLine();
-			}
-//			upgrade levels
-			for (int i = 0; i < game.UT.upgradeList.length; i++) {
-				for (int j = 0; j < game.UT.upgradeList[i].length; j++) {
-					bw.write(""+game.UT.upgradeList[i][j].getCurrentLevel());bw.newLine();
+		if (saveToggle) {
+			try {
+				lastTimePlayed = LocalDateTime.now().toString();
+				BufferedWriter bw = new BufferedWriter(new FileWriter(saveFile));
+//				exact time when game saves
+				bw.write(lastTimePlayed); bw.newLine();
+//				selections
+				bw.write(oreSelected.name()); bw.newLine();
+				bw.write(treeSelected.name()); bw.newLine();
+				bw.write(fishSelected.name()); bw.newLine();
+//				exp
+				bw.write(""+miningExp); bw.newLine();
+				bw.write(""+woodcuttingExp); bw.newLine();
+				bw.write(""+fishingExp); bw.newLine();
+//				level
+				bw.write(""+miningLvl); bw.newLine();
+				bw.write(""+woodcuttingLvl); bw.newLine();
+				bw.write(""+fishingLvl); bw.newLine();
+//				other
+				bw.write(""+quickChopStack); bw.newLine();
+				bw.write(""+frenzyMeter); bw.newLine();
+				bw.write(""+frenzyLevel); bw.newLine();
+//				items
+				for (int i = 0; i < game.inventory.itemList.length; i++) {
+					bw.write(game.inventory.itemList[i].Quanity().toString()); bw.newLine();
 				}
+//				upgrade levels
+				for (int i = 0; i < game.UT.upgradeList.length; i++) {
+					for (int j = 0; j < game.UT.upgradeList[i].length; j++) {
+						bw.write(""+game.UT.upgradeList[i][j].getCurrentLevel());bw.newLine();
+					}
+				}
+				bw.close();
+				System.out.println("data saved ");
 			}
-			bw.close();
-			System.out.println("data saved ");
+			catch(Exception e) {
+				System.out.println("could not save data ");
+			}
 		}
-		catch(Exception e) {
-			System.out.println("could not save data ");
-		}
+
 	}
 	
 	public String calculateAwayTime() {	
@@ -218,20 +227,35 @@ public class PlayerData {
 			miningExp = miningExp.subtract(getNextLevelReq(page_ID.MINING));
 			miningLvl++;
 			game.UT.miningPowerBase.setCurrentLevel(miningLvl);
-			saveData();
+			if (miningExp.compareTo(getNextLevelReq(page_ID.MINING)) == 1) {
+				incrementLevel(page_ID.MINING);
+			}
+			else {
+				saveData();
+			}
 		}
 		else if (skill == Screen.page_ID.WOODCUTTING) {
 			woodcuttingExp = woodcuttingExp.subtract(getNextLevelReq(page_ID.WOODCUTTING));
 			woodcuttingLvl++;
 			game.UT.woodcuttingPowerBase.setCurrentLevel(woodcuttingLvl);
-			saveData();
+			if (woodcuttingExp.compareTo(getNextLevelReq(page_ID.WOODCUTTING)) == 1) {
+				incrementLevel(page_ID.WOODCUTTING);
+			}
+			else {
+				saveData();
+			}
 
 		}
 		else if (skill == Screen.page_ID.FISHING) {
 			fishingExp = fishingExp.subtract(getNextLevelReq(page_ID.FISHING));
 			fishingLvl++;
 			game.UT.fishingPowerBase.setCurrentLevel(fishingLvl);
-			saveData();
+			if (fishingExp.compareTo(getNextLevelReq(page_ID.FISHING)) == 1) {
+				incrementLevel(page_ID.FISHING);
+			}
+			else {
+				saveData();
+			}
 		}
 	}
 	
@@ -252,12 +276,12 @@ public class PlayerData {
 	
 	public BigInteger getNextLevelReq(Screen.page_ID skill) {
 		long level = getLevel(skill);
-		BigInteger result = new BigInteger("100");
+		BigDecimal result = new BigDecimal("100");
 		while (level!=0) {
-			result.add(result.divide(new BigInteger("10")));
+			result = result.add(result.multiply(new BigDecimal(".2")));
 			level--;
 		}
-		return result;
+		return result.toBigInteger();
 	}
 	
 	private MiningScreen.Ore oreRead(String name){

@@ -19,6 +19,7 @@ import resources.Images;
 import resources.ItemGraphic;
 import screens.LabScreen.lab_page_ID;
 import screens.LabScreen.skill_tab;
+import screens.Screen.page_ID;
 
 public class MiningScreen extends Screen{
 
@@ -190,11 +191,13 @@ public class MiningScreen extends Screen{
 	    game.inventory.itemList[10].Increase(clayGained);
 		game.inventory.itemList[selectedOre.ID].Increase(oreGained);
 		game.PD.addExp(Screen.page_ID.MINING, selectedOre.exp.multiply(new BigInteger(""+oreGained)).add(new BigInteger(""+clayGained)));
-		
-		onScreenItems.add(new ItemGraphic(game.inventory.itemList[10], clayGained, 50, rand.nextInt(16)+123,rand.nextInt(9)+100,1));
-		if (oreGained > 0) {
-			onScreenItems.add(new ItemGraphic(game.inventory.itemList[selectedOre.ID], oreGained, 50, rand.nextInt(16)+145,rand.nextInt(9)+100,1));
+		if (!game.PD.simulating) {
+			onScreenItems.add(new ItemGraphic(game.inventory.itemList[10], clayGained, 50, rand.nextInt(16)+123,rand.nextInt(9)+100,1));
+			if (oreGained > 0) {
+				onScreenItems.add(new ItemGraphic(game.inventory.itemList[selectedOre.ID], oreGained, 50, rand.nextInt(16)+145,rand.nextInt(9)+100,1));
+			}
 		}
+
 		Item oreTotal = new Item(selectedOre.ID); oreTotal.Increase(oreGained);
 		Item clayTotal = new Item(10); clayTotal.Increase(clayGained);
 		
