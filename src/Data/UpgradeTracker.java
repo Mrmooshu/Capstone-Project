@@ -252,14 +252,14 @@ public class UpgradeTracker {
 		miningCritMod = new Stat("Mining Crit Power", 1, miningCritModUpgrades);
 
 		woodcuttingPower = new Stat("Woodcutting Power", 0, woodcuttingPowerUpgrades);
-		woodcuttingSpeed = new Stat("Woodcutting Speed", 200, woodcuttingSpeedUpgrades);
-		quickChopChance = new Stat("Quick Chop Chance", 1, quickChopChanceUpgrades);
+		woodcuttingSpeed = new Stat("Woodcutting Speed", 0, woodcuttingSpeedUpgrades);
+		quickChopChance = new Stat("Quick Chop Chance", 0, quickChopChanceUpgrades);
 		powerChopChance = new Stat("Power Chop Chance", 0, powerChopChanceUpgrades);
 
 		
 		fishingPower = new Stat("Fishing Power", 0, fishingPowerUpgrades);
 		fishingSpeed = new Stat("Fishing Speed", 0, fishingSpeedUpgrades);
-		frenzyPower = new Stat("Frenzy Power", 5, frenzyPowerUpgrades);
+		frenzyPower = new Stat("Frenzy Power", 10, frenzyPowerUpgrades);
 		frenzyDuration = new Stat("Frenzy Duration", 300, frenzyDurationUpgrades);
 //		other
 		miningPowerBase.setCurrentLevel(game.PD.getLevel(page_ID.MINING));
