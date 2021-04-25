@@ -12,23 +12,19 @@ import resources.Images;
 
 public class SettingScreen extends Screen{
 
-	public JButton quitButton,resetDataButton,addItemByID;
+	public JButton quitButton,resetDataButton;
 	private JButton[] settingsButtons;
 	private Game game;
-	private JTextField itemID;
 	
 	public SettingScreen(Game game) {
 		super(Images.backgrounds[Screen.page_ID.SETTINGS.ID], game);
 		this.game=game;
-		itemID = new JTextField("enter item ID");
-		itemID.setBounds(122*Game.SCREENSCALE, 60*Game.SCREENSCALE, 50*Game.SCREENSCALE, 10*Game.SCREENSCALE);
 		defineButtons();
-		settingsButtons = new JButton[] {quitButton,resetDataButton,addItemByID};
+		settingsButtons = new JButton[] {quitButton,resetDataButton};
 	}
 	
 	public void addButtons(Game game) {
 		super.addButtons(game);
-		game.add(itemID);
 		for (int i = 0; i < settingsButtons.length; i++) {
 			game.add(settingsButtons[i]);
 		}
@@ -36,7 +32,6 @@ public class SettingScreen extends Screen{
 	
 	public void removeButtons(Game game) {
 		super.removeButtons(game);
-		game.remove(itemID);
 		for (int i = 0; i < settingsButtons.length; i++) {
 			game.remove(settingsButtons[i]);
 		}
@@ -73,22 +68,6 @@ public class SettingScreen extends Screen{
 		resetDataButton.setContentAreaFilled(false);
 		resetDataButton.setBorderPainted(false);
 		resetDataButton.setFocusPainted(false);
-		
-		addItemByID = new JButton("addItem");
-		addItemByID.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (e.getActionCommand().equals("addItem"))
-					try {
-						game.inventory.itemList[Integer.parseInt(itemID.getText())].Increase(100);
-					}
-					catch(Exception a) {
-						
-					}
-			}
-		});
-		addItemByID.setBounds((125)*Game.SCREENSCALE,(75)*Game.SCREENSCALE, 42*Game.SCREENSCALE, 22*Game.SCREENSCALE);
-		addItemByID.setContentAreaFilled(false);
 	}
 	
 }

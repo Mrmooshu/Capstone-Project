@@ -3,7 +3,6 @@ package Data;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.math.BigInteger;
-
 import main.Game;
 import screens.Screen.page_ID;
 
@@ -247,19 +246,19 @@ public class UpgradeTracker {
 	public void initialize() {
 //		stats
 		miningPower = new Stat("Mining Power", 0, miningPowerUpgrades);
-		miningSpeed = new Stat("Mining Speed", 0, miningSpeedUpgrades);
-		miningCritChance = new Stat("Mining Crit %", 0, miningCritChanceUpgrades);
+		miningSpeed = new Stat("Mining Speed", 200, miningSpeedUpgrades);
+		miningCritChance = new Stat("Mining Crit %", .5, miningCritChanceUpgrades);
 		miningCritMod = new Stat("Mining Crit Power", 1, miningCritModUpgrades);
 
 		woodcuttingPower = new Stat("Woodcutting Power", 0, woodcuttingPowerUpgrades);
-		woodcuttingSpeed = new Stat("Woodcutting Speed", 0, woodcuttingSpeedUpgrades);
-		quickChopChance = new Stat("Quick Chop Chance", 0, quickChopChanceUpgrades);
+		woodcuttingSpeed = new Stat("Woodcutting Speed", 200, woodcuttingSpeedUpgrades);
+		quickChopChance = new Stat("Quick Chop Chance", 1, quickChopChanceUpgrades);
 		powerChopChance = new Stat("Power Chop Chance", 0, powerChopChanceUpgrades);
 
 		
 		fishingPower = new Stat("Fishing Power", 0, fishingPowerUpgrades);
-		fishingSpeed = new Stat("Fishing Speed", 0, fishingSpeedUpgrades);
-		frenzyPower = new Stat("Frenzy Power", 10, frenzyPowerUpgrades);
+		fishingSpeed = new Stat("Fishing Speed", 200, fishingSpeedUpgrades);
+		frenzyPower = new Stat("Frenzy Power", 50, frenzyPowerUpgrades);
 		frenzyDuration = new Stat("Frenzy Duration", 300, frenzyDurationUpgrades);
 //		other
 		miningPowerBase.setCurrentLevel(game.PD.getLevel(page_ID.MINING));

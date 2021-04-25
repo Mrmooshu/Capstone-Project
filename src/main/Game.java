@@ -1,8 +1,6 @@
 package main;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 
@@ -10,8 +8,6 @@ import Data.Items;
 import Data.PlayerData;
 import Data.UpgradeTracker;
 import resources.Images;
-import screens.LabScreen;
-import screens.Screen;
 import screens.ScreenManager;
 
 public class Game extends JPanel implements Runnable{

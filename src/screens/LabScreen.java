@@ -3,16 +3,16 @@ package screens;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.LinkedList;
-
+import java.util.Random;
 import javax.swing.JButton;
-
 import Data.Items;
-import Data.PlayerData;
 import Data.UpgradeTracker.Upgrade;
 import main.Game;
 import resources.Animation;
 import resources.Images;
+import resources.ItemGraphic;
 
 public class LabScreen extends Screen{
 	
@@ -126,8 +126,10 @@ public class LabScreen extends Screen{
 	}
 	
 	private void drawGeneratorPage(Graphics g) {
+		displayItems(Arrays.copyOfRange(game.inventory.itemList,0,1), g, 20, 40);
 		generator.drawNextFrame(g, (Game.WIDTH/2 - 25)*Game.SCREENSCALE, (Game.HEIGHT/2 - 24)*Game.SCREENSCALE, 50*Game.SCREENSCALE, 48*Game.SCREENSCALE);
 		handle.drawOneCycle(g, (Game.WIDTH/2 - 47)*Game.SCREENSCALE, (Game.HEIGHT/2 - 10)*Game.SCREENSCALE, 22*Game.SCREENSCALE, 20*Game.SCREENSCALE);
+		drawOnScreenItems(g);
 	}
 	
 	private void drawCharacterPage(Graphics g) {
@@ -277,8 +279,10 @@ public class LabScreen extends Screen{
 		genButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				Random rand = new Random();
 				inventory.itemList[0].Increase(1);
 				handle.setFrameCounter(0);
+				onScreenItems.add(new ItemGraphic(game.inventory.itemList[0], 1, 50, rand.nextInt(24)+123,rand.nextInt(9)+60,1));
 				}
 			});
 		genButton.setBounds((Game.WIDTH/2-50)*Game.SCREENSCALE,(Game.HEIGHT/2-40)*Game.SCREENSCALE, 100*Game.SCREENSCALE, 80*Game.SCREENSCALE);

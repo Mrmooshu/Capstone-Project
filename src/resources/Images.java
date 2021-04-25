@@ -2,10 +2,8 @@ package resources;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -26,7 +24,7 @@ public class Images {
 	public static Color DARKGREEN = new Color(0,150,0);
 	public static Color DARKBLUE = new Color(0,0,150);
 
-	public static Color THOUSANDCOLOR = new Color(100,100,255);
+	public static Color THOUSANDCOLOR = new Color(100,180,255);
 	public static Color MILLIONCOLOR = new Color(100,255,100);
 	public static Color BILLIONCOLOR = new Color(100,255,180);
 	public static Color TRILLIONCOLOR = new Color(255,255,100);
@@ -42,7 +40,7 @@ public class Images {
 	public static BufferedImage[] woodcuttingcharacter,woodcuttingUIicons,woodcuttingUI,woodcuttingTrees,quickchopstacks;
 	public static BufferedImage[] fishingcharacter,fishingUIicons,fishingUI;
 	//animation frames
-	public static BufferedImage[] generator, handle, mininganimation, choppinganimation, fishinganimation, quickchopanimation;
+	public static BufferedImage[] generator, handle, mininganimation, choppinganimation, fishinganimation, quickchopanimation, miningcritanimation;
 	//image
 	public static BufferedImage headerUI;
 	
@@ -79,6 +77,7 @@ public class Images {
 		choppinganimation = new BufferedImage[9];
 		fishinganimation = new BufferedImage[16];
 		quickchopanimation = new BufferedImage[10];
+		miningcritanimation = new BufferedImage[9];
 		
 		try {
 			backgrounds[Screen.page_ID.LAB.ID] = ImageIO.read(getClass().getResourceAsStream("/resources/Backgrounds/lab_background.png"));
@@ -136,6 +135,7 @@ public class Images {
 			readSpriteSheet("/resources/Animations/choppingAnimation.png", choppinganimation, 48, 31);
 			readSpriteSheet("/resources/Animations/fishingAnimation.png", fishinganimation, 48, 32);
 			readSpriteSheet("/resources/Animations/quickChopAnimation.png", quickchopanimation, 48, 31);
+			readSpriteSheet("/resources/Animations/miningCritAnimation.png", miningcritanimation, 48, 27);
 			
 		}
 		catch (IOException e) {

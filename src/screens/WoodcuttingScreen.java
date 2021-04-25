@@ -3,7 +3,6 @@ package screens;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -17,8 +16,6 @@ import main.Game;
 import resources.Animation;
 import resources.Images;
 import resources.ItemGraphic;
-import screens.MiningScreen.stat_tab;
-import screens.Screen.page_ID;
 
 public class WoodcuttingScreen extends Screen{
 	
@@ -174,18 +171,18 @@ public class WoodcuttingScreen extends Screen{
 	private Item[] chopWood() {
 		Random rand = new Random();
 		int woodGained = 0;
-		double a = selectedTree.durability;
-		double b = game.UT.woodcuttingPower.getTotal();
-		double c = game.UT.quickChopChance.getTotal()*100;
-		if (rand.nextInt(101) <= c && quickChopStack < 4) {
+		double durability = selectedTree.durability;
+		double power = game.UT.woodcuttingPower.getTotal();
+		double quickChop = game.UT.quickChopChance.getTotal()*100;
+		if (rand.nextInt(101) <= quickChop && quickChopStack < 4) {
 			quickChopStack++;
 			game.PD.quickChopStack = quickChopStack;
 		}
-		while ( b >= a) {
-			b = b-a;
+		while ( power >= durability) {
+			power = power-durability;
 			woodGained++;
 		}
-		if (rand.nextInt(selectedTree.durability) <= b) {
+		if (rand.nextInt(selectedTree.durability) <= power) {
 			woodGained++;
 		}
 		int leafGained = rand.nextInt(Math.max(woodGained,1))+game.PD.getLevel(page_ID.WOODCUTTING);

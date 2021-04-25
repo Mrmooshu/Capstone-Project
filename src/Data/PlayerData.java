@@ -2,18 +2,11 @@ package Data;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 import Data.Items.Item;
@@ -311,13 +304,5 @@ public class PlayerData {
 		}
 		return FishingScreen.Fish.FISH1;
 	}
-
-	
-	
-	
-	
-	
-	
-	
 	
 }

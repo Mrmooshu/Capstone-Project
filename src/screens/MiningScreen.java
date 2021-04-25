@@ -3,23 +3,17 @@ package screens;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Random;
-
 import javax.swing.JButton;
-
 import Data.Items.Item;
 import Data.UpgradeTracker.Upgrade;
 import main.Game;
 import resources.Animation;
 import resources.Images;
 import resources.ItemGraphic;
-import screens.LabScreen.lab_page_ID;
-import screens.LabScreen.skill_tab;
-import screens.Screen.page_ID;
 
 public class MiningScreen extends Screen{
 
@@ -71,6 +65,7 @@ public class MiningScreen extends Screen{
 	private LinkedList<JButton> miningButtons;
 
 	public Animation mining = new Animation(Images.mininganimation, 3);
+	public Animation critical = new Animation(Images.miningcritanimation, 3);
 	
 	public MiningScreen(Game game) {
 		super(Images.backgrounds[Screen.page_ID.MINING.ID], game);
@@ -90,6 +85,7 @@ public class MiningScreen extends Screen{
 		miningButtons.add(statUpgrade);
 		mineIntervalCounter = (int) (Math.max(MINEBASEINTERVAL-game.UT.miningSpeed.getTotal(),20));
 	    mining.setFrameCounterToEnd();
+	    critical.setFrameCounterToEnd();
 	    expfornextlevel = game.PD.getNextLevelReq(page_ID.MINING);
 	}
 
@@ -170,21 +166,23 @@ public class MiningScreen extends Screen{
 	private Item[] mineOre() {
 		Random rand = new Random();
 		int oreGained = 0;
-		double a = selectedOre.durability;
-		double b = game.UT.miningPower.getTotal();
-		double c = game.UT.miningCritChance.getTotal()*100;
-		while (c >= 100) {
-			b = b*game.UT.miningCritMod.getTotal();
-			c = c-100;
+		double durability = selectedOre.durability;
+		double power = game.UT.miningPower.getTotal();
+		double crit = game.UT.miningCritChance.getTotal()*100;
+		while (crit >= 100) {
+			power = power*game.UT.miningCritMod.getTotal();
+			crit = crit-100;
+			if (!game.PD.simulating) critical.setFrameCounter(0);
 		}
-		if (rand.nextInt(101) <= c) {
-			b = b*game.UT.miningCritMod.getTotal();
+		if (rand.nextInt(101) <= crit) {
+			power = power*game.UT.miningCritMod.getTotal();
+			if (!game.PD.simulating) critical.setFrameCounter(0);
 		}
-		while ( b >= a) {
-			b = b-a;
+		while ( power >= durability) {
+			power = power-durability;
 			oreGained++;
 		}
-		if (rand.nextInt(selectedOre.durability) <= b) {
+		if (rand.nextInt(selectedOre.durability) <= power) {
 			oreGained++;
 		}
 		int clayGained = rand.nextInt(Math.max(oreGained,1))+game.PD.getLevel(page_ID.MINING);
@@ -192,9 +190,9 @@ public class MiningScreen extends Screen{
 		game.inventory.itemList[selectedOre.ID].Increase(oreGained);
 		game.PD.addExp(Screen.page_ID.MINING, selectedOre.exp.multiply(new BigInteger(""+oreGained)).add(new BigInteger(""+clayGained)));
 		if (!game.PD.simulating) {
-			onScreenItems.add(new ItemGraphic(game.inventory.itemList[10], clayGained, 50, rand.nextInt(16)+123,rand.nextInt(9)+100,1));
+			onScreenItems.add(new ItemGraphic(game.inventory.itemList[10], clayGained, 50, rand.nextInt(16)+123,rand.nextInt(9)+80,1));
 			if (oreGained > 0) {
-				onScreenItems.add(new ItemGraphic(game.inventory.itemList[selectedOre.ID], oreGained, 50, rand.nextInt(16)+145,rand.nextInt(9)+100,1));
+				onScreenItems.add(new ItemGraphic(game.inventory.itemList[selectedOre.ID], oreGained, 50, rand.nextInt(16)+145,rand.nextInt(9)+80,1));
 			}
 		}
 
@@ -212,6 +210,7 @@ public class MiningScreen extends Screen{
 		super.draw(g);
 		mineIntervalCounter--;
 		mining.drawOneCycle(g, 116*Game.SCREENSCALE, 92*Game.SCREENSCALE, Images.mininganimation[0].getWidth()*2, Images.mininganimation[0].getHeight()*2);
+		critical.drawOneCycle(g, 116*Game.SCREENSCALE, 92*Game.SCREENSCALE, Images.miningcritanimation[0].getWidth()*2, Images.miningcritanimation[0].getHeight()*2);
 		switch(statTab) {
 		case POWER:
 			g.drawImage(Images.miningUI[0],MININGMENUX*Game.SCREENSCALE,MININGMENUY*Game.SCREENSCALE,Images.miningUI[0].getWidth()*Game.SCREENSCALE,Images.miningUI[0].getHeight()*Game.SCREENSCALE,null);

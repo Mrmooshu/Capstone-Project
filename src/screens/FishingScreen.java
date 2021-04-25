@@ -3,7 +3,6 @@ package screens;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -17,9 +16,6 @@ import main.Game;
 import resources.Animation;
 import resources.Images;
 import resources.ItemGraphic;
-import screens.Screen.page_ID;
-import screens.WoodcuttingScreen.Wood;
-import screens.WoodcuttingScreen.stat_tab;
 
 public class FishingScreen extends Screen{
 	
@@ -179,13 +175,13 @@ public class FishingScreen extends Screen{
 	private Item[] catchFish() {
 		Random rand = new Random();
 		int fishGained = 0;
-		double a = selectedFish.durability;
-		double b = game.UT.fishingPower.getTotal();
-		while ( b >= a) {
-			b = b-a;
+		double durability = selectedFish.durability;
+		double power = game.UT.fishingPower.getTotal();
+		while ( power >= durability) {
+			power = power-durability;
 			fishGained++;
 		}
-		if (rand.nextInt(selectedFish.durability) <= b) {
+		if (rand.nextInt(selectedFish.durability) <= power) {
 			fishGained++;
 		}
 		int seaweedGained = rand.nextInt(Math.max(fishGained,1))+game.PD.getLevel(page_ID.FISHING);
